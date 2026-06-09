@@ -1,0 +1,63 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(
+    135deg,
+    rgb(240, 249, 255) 0%,
+    rgb(255, 255, 255) 50%,
+    rgb(224, 242, 254) 100%
+  ) fixed;
+  font-family: "Nunito Sans", sans-serif;
+  color: #1b1c1e;
+}
+
+.font-display {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.font-body {
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 4px 24px rgba(0, 15, 34, 0.08);
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at left top, #0a2540 0%, #000f22 100%);
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, #00b8d9 0%, #1e88e5 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #0a2540 0%, #1e88e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
