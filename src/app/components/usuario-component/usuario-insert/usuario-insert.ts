@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-usuario-insert',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule ],
   templateUrl: './usuario-insert.html',
   styleUrl: './usuario-insert.css',
 })
@@ -47,12 +47,8 @@ export class UsuarioInsert implements OnInit {
     this.usuario.activo = true;
 
     this.uS.insert(this.usuario).subscribe({
-      next: () => {
-        this.mensajeExito = true;
-
-        setTimeout(() => {
-          this.mensajeExito = false;
-        }, 3000);
+      next: (data) => {
+        this.router.navigate(["/dashboard"])
       },
       error: (e) => {
         console.log(e);

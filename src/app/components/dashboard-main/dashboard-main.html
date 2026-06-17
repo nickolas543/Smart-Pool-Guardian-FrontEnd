@@ -1,0 +1,216 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="./dashboard-main.css">
+
+<h2 class="sr-only">Pool Guardian — panel de administración con estadísticas, estado de piscinas, alertas y recomendaciones IA.</h2>
+
+<div class="app">
+  <nav class="side">
+    <div class="side-top">
+      <div class="logo-box"><i class="ti ti-droplet" aria-hidden="true"></i></div>
+      <div>
+        <div class="logo-name">Pool Guardian</div>
+        <div class="logo-sub">Tech-Luxe Monitor</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-sec">Principal</div>
+      <div class="nav-a on"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+      <div class="nav-a"><i class="ti ti-users" aria-hidden="true"></i> Usuarios</div>
+      <div class="nav-a"><i class="ti ti-shield-check" aria-hidden="true"></i> Roles</div>
+      <div class="nav-a"><i class="ti ti-waves" aria-hidden="true"></i> Piscinas</div>
+      <div class="nav-sec">Análisis</div>
+      <div class="nav-a"><i class="ti ti-droplet" aria-hidden="true"></i> Mediciones</div>
+      <div class="nav-a"><i class="ti ti-brain" aria-hidden="true"></i> Evaluaciones IA</div>
+      <div class="nav-a"><i class="ti ti-sparkles" aria-hidden="true"></i> Recomendaciones IA</div>
+      <div class="nav-a"><i class="ti ti-bell" aria-hidden="true"></i> Notificaciones</div>
+      <div class="nav-a"><i class="ti ti-chart-bar" aria-hidden="true"></i> Reportes</div>
+    </div>
+    <div class="side-foot">
+      <div class="nav-a"><i class="ti ti-settings" aria-hidden="true"></i> Configuración</div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="search">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input type="text" placeholder="Buscar piscinas, usuarios…" aria-label="Buscar">
+      </div>
+      <div class="top-right">
+        <div class="tbtn" aria-label="Notificaciones">
+          <i class="ti ti-bell" aria-hidden="true"></i>
+          <div class="dot"></div>
+        </div>
+        <div class="tbtn" aria-label="Ajustes"><i class="ti ti-settings" aria-hidden="true"></i></div>
+        <div class="ava" role="img" aria-label="Perfil">AD</div>
+      </div>
+    </header>
+
+    <main class="canvas">
+      <div class="phdr">
+        <div class="phdr-l">
+          <h1>Resumen del sistema</h1>
+          <p>Estado general de todas las instalaciones monitorizadas</p>
+        </div>
+        <div class="phdr-r">
+          <button class="btn-o"><i class="ti ti-download" style="font-size:13px" aria-hidden="true"></i> Exportar</button>
+          <button class="btn-p"><i class="ti ti-plus" style="font-size:13px" aria-hidden="true"></i> Nueva piscina</button>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="sc">
+          <div class="sc-top"><div class="si b"><i class="ti ti-waves" aria-hidden="true"></i></div><span class="sbadge b">Total</span></div>
+          <div class="sc-num">12</div><div class="sc-lbl">Piscinas activas</div>
+        </div>
+        <div class="sc">
+          <div class="sc-top"><div class="si r"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div><span class="sbadge r">Crítico</span></div>
+          <div class="sc-num">2</div><div class="sc-lbl">Piscinas en riesgo</div>
+        </div>
+        <div class="sc">
+          <div class="sc-top"><div class="si g"><i class="ti ti-droplet" aria-hidden="true"></i></div></div>
+          <div class="sc-num">45</div><div class="sc-lbl">Mediciones hoy</div>
+        </div>
+        <div class="sc">
+          <div class="sc-top"><div class="si a"><i class="ti ti-bell-ringing" aria-hidden="true"></i></div></div>
+          <div class="sc-num">8</div><div class="sc-lbl">Notifs. pendientes</div>
+        </div>
+        <div class="sc">
+          <div class="sc-top"><div class="si p"><i class="ti ti-brain" aria-hidden="true"></i></div></div>
+          <div class="sc-num">3</div><div class="sc-lbl">Evals. IA críticas</div>
+        </div>
+        <div class="sc">
+          <div class="sc-top"><div class="si gr"><i class="ti ti-user-off" aria-hidden="true"></i></div></div>
+          <div class="sc-num">5</div><div class="sc-lbl">Usuarios inactivos</div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card">
+            <div class="card-hdr">
+              <h3><i class="ti ti-chart-line" aria-hidden="true"></i> Evolución de calidad del agua</h3>
+              <div class="tabs">
+                <div class="tab on">pH</div>
+                <div class="tab">Cloro</div>
+                <div class="tab">Temp</div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <div class="chart-bg">
+                <svg viewBox="0 0 560 128" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#2e5490" stop-opacity=".18"/>
+                      <stop offset="100%" stop-color="#2e5490" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,90 C50,82 90,100 140,74 S220,55 270,68 S340,86 390,54 S450,36 500,50 S540,46 560,44 L560,128 L0,128Z" fill="url(#g1)"/>
+                  <path d="M0,90 C50,82 90,100 140,74 S220,55 270,68 S340,86 390,54 S450,36 500,50 S540,46 560,44" fill="none" stroke="#2e5490" stroke-width="2" vector-effect="non-scaling-stroke"/>
+                  <circle cx="390" cy="54" r="3.5" fill="#2e5490" stroke="#f8fafc" stroke-width="2"/>
+                  <circle cx="500" cy="50" r="3.5" fill="#2e5490" stroke="#f8fafc" stroke-width="2"/>
+                  <path d="M0,106 C50,99 90,110 140,96 S220,84 270,89 S340,98 390,80 S450,70 500,76 S540,73 560,71" fill="none" stroke="#1d9e75" stroke-width="1.5" stroke-dasharray="5 3" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <div class="chart-xlbl"><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Hoy</span></div>
+                <div class="chart-legend">
+                  <span style="display:flex;align-items:center;gap:4px"><span class="leg-dot" style="background:#2e5490"></span>pH</span>
+                  <span style="display:flex;align-items:center;gap:4px"><span class="leg-dot" style="background:#1d9e75;height:1px;border-top:1.5px dashed #1d9e75;background:none;width:10px"></span>Ref.</span>
+                </div>
+              </div>
+            </div>
+            <div class="pool-list">
+              <div class="pr w">
+                <div class="pr-l">
+                  <div class="pr-ico w"><i class="ti ti-waves" aria-hidden="true"></i></div>
+                  <div><div class="pr-name">Hotel Sol Azul</div><div class="pr-time">Actualizado hace 15 min</div></div>
+                </div>
+                <div class="pr-stats">
+                  <div class="prs"><div class="prs-l">pH</div><div class="prs-v">7.2 <i class="ti ti-alert-triangle" style="font-size:11px;color:#ef9f27" aria-label="advertencia"></i></div></div>
+                  <div class="prs"><div class="prs-l">Cloro</div><div class="prs-v">1.5 <span style="font-size:9px;font-weight:400">ppm</span></div></div>
+                  <div class="prs"><div class="prs-l">Temp</div><div class="prs-v">29°C</div></div>
+                </div>
+              </div>
+              <div class="pr ok">
+                <div class="pr-l">
+                  <div class="pr-ico ok"><i class="ti ti-waves" aria-hidden="true"></i></div>
+                  <div><div class="pr-name">Club Deportivo Central</div><div class="pr-time">Actualizado hace 1 hora</div></div>
+                </div>
+                <div class="pr-stats">
+                  <div class="prs"><div class="prs-l">pH</div><div class="prs-v">7.4</div></div>
+                  <div class="prs"><div class="prs-l">Cloro</div><div class="prs-v">2.0 <span style="font-size:9px;font-weight:400">ppm</span></div></div>
+                  <div class="prs"><div class="prs-l">Temp</div><div class="prs-v">26°C</div></div>
+                </div>
+              </div>
+              <div class="pr cr">
+                <div class="pr-l">
+                  <div class="pr-ico cr"><i class="ti ti-waves" aria-hidden="true"></i></div>
+                  <div><div class="pr-name">Condominio Las Palmas</div><div class="pr-time">Actualizado hace 5 min</div></div>
+                </div>
+                <div class="pr-stats">
+                  <div class="prs"><div class="prs-l">pH</div><div class="prs-v cr">8.1 <i class="ti ti-alert-circle" style="font-size:11px;color:#a32d2d" aria-label="crítico"></i></div></div>
+                  <div class="prs"><div class="prs-l">Cloro</div><div class="prs-v">0.8 <span style="font-size:9px;font-weight:400">ppm</span></div></div>
+                  <div class="prs"><div class="prs-l">Temp</div><div class="prs-v">31°C</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rcol">
+          <div class="alert-card">
+            <div class="alert-hdr">
+              <h3><i class="ti ti-alert-triangle" aria-hidden="true"></i> Alertas críticas</h3>
+              <span class="nbadge">2 nuevas</span>
+            </div>
+            <div class="alert-body">
+              <div class="ai">
+                <div class="ai-top"><span class="ai-title">pH alto — Las Palmas</span><span class="ai-time">hace 5 min</span></div>
+                <div class="ai-desc">El pH superó el umbral seguro (8.1). Requiere atención inmediata.</div>
+              </div>
+              <div class="ai">
+                <div class="ai-top"><span class="ai-title">Bomba desconectada</span><span class="ai-time">hace 22 min</span></div>
+                <div class="ai-desc">Fallo de conexión IoT en la bomba principal de Hotel Sol Azul.</div>
+              </div>
+            </div>
+            <div class="alert-more">Ver todas las alertas <i class="ti ti-arrow-right" style="font-size:11px" aria-hidden="true"></i></div>
+          </div>
+
+          <div class="ai-panel">
+            <div class="ai-phdr">
+              <div class="ai-phdr-ico"><i class="ti ti-sparkles" aria-hidden="true"></i></div>
+              <span>Recomendaciones IA</span>
+            </div>
+            <div class="ai-items">
+              <div class="ai-item">
+                <div class="ai-item-ico"><i class="ti ti-flask" aria-hidden="true"></i></div>
+                <div>
+                  <div class="ai-item-title">Ajuste químico sugerido</div>
+                  <div class="ai-item-desc">Hotel Sol Azul: añadir 500 ml de reductor de pH. Estabilización estimada en 4 horas.</div>
+                  <div class="ai-link">Aplicar de forma remota <i class="ti ti-arrow-right" style="font-size:10px" aria-hidden="true"></i></div>
+                </div>
+              </div>
+              <hr class="ai-div">
+              <div class="ai-item">
+                <div class="ai-item-ico"><i class="ti ti-leaf" aria-hidden="true"></i></div>
+                <div>
+                  <div class="ai-item-title">Optimización energética</div>
+                  <div class="ai-item-desc">Club Central puede reducir el ciclo de filtrado 2 h/día sin afectar la calidad del agua.</div>
+                </div>
+              </div>
+              <hr class="ai-div">
+              <div class="ai-item">
+                <div class="ai-item-ico"><i class="ti ti-thermometer" aria-hidden="true"></i></div>
+                <div>
+                  <div class="ai-item-title">Temperatura elevada</div>
+                  <div class="ai-item-desc">Las Palmas: 31°C favorece crecimiento bacteriano. Se recomienda aumentar cloración.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot">© 2024 Smart Pool Guardian — Todos los derechos reservados</div>
+    </main>
+  </div>
+</div>
