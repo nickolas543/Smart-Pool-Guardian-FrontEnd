@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingPage } from './components/landing-pageComponent/landing-pageComponent';
 import { UsuarioComponent } from './components/usuario-component/usuario-component';
 import { UsuarioInsert } from './components/usuario-component/usuario-insert/usuario-insert';
+import { DashboradMain } from './components/dashboard-main/dashboard-main';
 
 export const routes: Routes = [
     {
@@ -12,6 +13,10 @@ export const routes: Routes = [
     {
         path: 'landing',
         component: LandingPage
+    },
+    {
+        path: 'dashboard',
+        component: DashboradMain
     },
     {
         path: 'usuarios',
