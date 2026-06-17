@@ -32,8 +32,8 @@ export class UsuarioInsert implements OnInit {
   aceptar() {
     this.form.markAllAsTouched();
 
-    if (!this.form.valid) {
-      if (!this.form.value.terms) {
+    if (this.form.invalid) {
+      if (this.form.get('terms')?.invalid) {
         alert('Debes aceptar los términos y condiciones.');
       }
       return;
@@ -47,9 +47,9 @@ export class UsuarioInsert implements OnInit {
     this.usuario.activo = true;
 
     this.uS.insert(this.usuario).subscribe({
-      next: (data) => {
+      next: () => {
         this.mensajeExito = true;
-        console.log("KASHIRA")
+
         setTimeout(() => {
           this.mensajeExito = false;
         }, 3000);
