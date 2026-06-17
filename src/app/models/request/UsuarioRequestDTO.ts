@@ -4,4 +4,5 @@ export class UsuarioRequestDTO {
   email: string = '';
   numeroCelular: string = '';
   rolId: number = 0;
+  activo: boolean = true;
 }

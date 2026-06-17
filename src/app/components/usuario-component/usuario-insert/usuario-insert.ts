@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 export class UsuarioInsert implements OnInit {
   form: FormGroup = new FormGroup({});
   usuario: UsuarioRequestDTO = new UsuarioRequestDTO();
-
+  mensajeExito: boolean = false;
   constructor(
     private uS: UsuarioService,
     private router: Router,
@@ -26,20 +26,37 @@ export class UsuarioInsert implements OnInit {
       email: ['', Validators.required],
       contraseña: ['', Validators.required],
       numero: ['', Validators.required],
+      terms: [false, Validators.requiredTrue]
     });
   }
   aceptar() {
-    if (this.form.valid) {
-      this.usuario.nombreUsuario = this.form.value.nombre;
-      this.usuario.email = this.form.value.email;
-      this.usuario.password = this.form.value.contraseña;
-      this.usuario.numeroCelular = this.form.value.numero;
-      this.usuario.rolId = 1;
-      this.uS.insert(this.usuario).subscribe({
-        next: () => {
-          this.router.navigate(['/usuarios/registrar']);
-        },
-      });
+    this.form.markAllAsTouched();
+
+    if (!this.form.valid) {
+      if (!this.form.value.terms) {
+        alert('Debes aceptar los términos y condiciones.');
+      }
+      return;
     }
+
+    this.usuario.nombreUsuario = this.form.value.nombre;
+    this.usuario.email = this.form.value.email;
+    this.usuario.password = this.form.value.contraseña;
+    this.usuario.numeroCelular = this.form.value.numero;
+    this.usuario.rolId = 1;
+    this.usuario.activo = true;
+
+    this.uS.insert(this.usuario).subscribe({
+      next: (data) => {
+        this.mensajeExito = true;
+        console.log("KASHIRA")
+        setTimeout(() => {
+          this.mensajeExito = false;
+        }, 3000);
+      },
+      error: (e) => {
+        console.log(e);
+      }
+    });
   }
 }
