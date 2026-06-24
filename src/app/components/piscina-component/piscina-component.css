@@ -1,0 +1,140 @@
+/* =============================================
+   Pool Guardian – Hoja de estilos personalizada
+   ============================================= */
+
+/* --- Variables de color (sincronizadas con Tailwind config) --- */
+:root {
+  --color-primary:               #000f22;
+  --color-primary-container:     #0a2540;
+  --color-primary-fixed:         #d2e4ff;
+  --color-primary-fixed-dim:     #b0c8eb;
+  --color-inverse-primary:       #b0c8eb;
+
+  --color-secondary:             #565f6c;
+  --color-secondary-container:   #dbe3f3;
+  --color-secondary-fixed:       #dbe3f3;
+  --color-secondary-fixed-dim:   #bfc7d6;
+
+  --color-tertiary:              #1a0b00;
+  --color-tertiary-container:    #381d00;
+  --color-tertiary-fixed:        #ffdcbe;
+  --color-tertiary-fixed-dim:    #eebd90;
+
+  --color-surface:               #faf9fb;
+  --color-surface-dim:           #dbd9dc;
+  --color-surface-bright:        #faf9fb;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-low:     #f5f3f6;
+  --color-surface-container:         #efedf0;
+  --color-surface-container-high:    #e9e8ea;
+  --color-surface-container-highest: #e3e2e5;
+  --color-surface-variant:           #e3e2e5;
+  --color-surface-tint:              #49607e;
+
+  --color-background:            #faf9fb;
+  --color-outline:               #74777e;
+  --color-outline-variant:       #c4c6ce;
+  --color-inverse-surface:       #2f3033;
+  --color-inverse-on-surface:    #f2f0f3;
+
+  --color-on-primary:            #ffffff;
+  --color-on-primary-container:  #768dad;
+  --color-on-primary-fixed:      #001c37;
+  --color-on-primary-fixed-variant: #314865;
+  --color-on-secondary:          #ffffff;
+  --color-on-secondary-container: #5c6572;
+  --color-on-secondary-fixed:    #141c27;
+  --color-on-secondary-fixed-variant: #3f4754;
+  --color-on-tertiary:           #ffffff;
+  --color-on-tertiary-container: #ae835a;
+  --color-on-tertiary-fixed:     #2d1600;
+  --color-on-tertiary-fixed-variant: #613f1c;
+  --color-on-surface:            #1b1c1e;
+  --color-on-surface-variant:    #43474d;
+  --color-on-background:         #1b1c1e;
+
+  --color-error:                 #ba1a1a;
+  --color-error-container:       #ffdad6;
+  --color-on-error:              #ffffff;
+  --color-on-error-container:    #93000a;
+}
+
+/* --- Fondo con degradados radiales --- */
+body {
+  background:
+    radial-gradient(at 0%   0%,   rgba(210, 228, 255, 0.4) 0px, transparent 50%),
+    radial-gradient(at 100% 0%,   rgba(219, 227, 243, 0.4) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(210, 228, 255, 0.4) 0px, transparent 50%),
+    radial-gradient(at 0%   100%, rgba(219, 227, 243, 0.4) 0px, transparent 50%),
+    rgb(250, 249, 251);
+}
+
+/* --- Tarjeta de vidrio (glassmorphism) --- */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(10, 37, 64, 0.05);
+}
+
+/* --- Brillo de temperatura alta --- */
+.temp-high-glow {
+  box-shadow: 0 0 20px rgba(186, 26, 26, 0.15);
+  border: 1px solid rgba(186, 26, 26, 0.3);
+}
+
+/* --- Degradado de gráfico --- */
+.chart-gradient {
+  background: linear-gradient(
+    180deg,
+    rgba(210, 228, 255, 0.3) 0%,
+    rgba(210, 228, 255, 0)   100%
+  );
+}
+
+/* --- Scrollbar personalizada en el sidebar --- */
+.sidebar-scroll::-webkit-scrollbar         { width: 4px; }
+.sidebar-scroll::-webkit-scrollbar-track  { background: transparent; }
+.sidebar-scroll::-webkit-scrollbar-thumb  {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* --- Barra de navegación superior --- */
+.topnav {
+  background: rgba(250, 249, 251, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* --- Sidebar con degradado --- */
+.sidebar {
+  background: linear-gradient(rgb(10, 37, 64) 0%, rgb(0, 15, 34) 100%);
+}
+
+/* --- Enlace activo del sidebar --- */
+.sidebar-link-active {
+  background: linear-gradient(90deg, rgb(0, 184, 217) 0%, rgb(30, 136, 229) 100%);
+  color: white;
+  transform: scale(0.95);
+}
+
+/* --- Botón principal (CTA) --- */
+.btn-primary-gradient {
+  background: linear-gradient(135deg, rgb(0, 184, 217) 0%, rgb(30, 136, 229) 100%);
+  border: none;
+}
+.btn-primary-gradient:hover {
+  opacity: 0.9;
+}
+
+/* --- Tarjeta de piscina normal (degradado sutil) --- */
+.pool-card-normal {
+  background: linear-gradient(135deg, rgb(255, 255, 255) 0%, rgb(240, 244, 248) 100%);
+}
+
+/* --- Tarjeta de resumen (degradado azul suave) --- */
+.summary-card {
+  background: linear-gradient(135deg, rgb(255, 255, 255) 0%, rgb(230, 239, 253) 100%);
+}

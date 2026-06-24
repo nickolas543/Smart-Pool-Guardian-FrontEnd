@@ -4,6 +4,8 @@ import { UsuarioComponent } from './components/usuario-component/usuario-compone
 import { UsuarioInsert } from './components/usuario-component/usuario-insert/usuario-insert';
 import { UsuarioLogin } from './components/usuario-component/usuario-login/login';
 import { DashboradMain } from './components/dashboard-main/dashboard-main';
+import { PiscinasComponent } from './components/piscina-component/piscina-component';
+import { NotificacionComponent } from './components/notificacion-component/notificacion-component';
 
 export const routes: Routes = [
   {
@@ -18,6 +20,14 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboradMain,
+  },
+  {
+    path: 'piscinas',
+    component: PiscinasComponent,
+  },
+  {
+    path: 'notificaciones',
+    component: NotificacionComponent,
   },
   {
     path: 'usuarios',

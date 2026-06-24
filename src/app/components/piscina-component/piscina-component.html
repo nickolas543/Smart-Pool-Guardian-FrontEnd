@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool Guardian - Gestión de Piscinas</title>
+
+  <!-- Tailwind CSS con plugins -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Google Fonts: tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap">
+
+  <!-- Material Symbols (una sola vez, sin duplicado) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+  <!-- Hoja de estilos propia -->
+  <link rel="stylesheet" href="./piscina-component.css">
+
+  <!-- Configuración de Tailwind -->
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-fixed-variant":  "#3f4754",
+            "on-tertiary-container":       "#ae835a",
+            "primary-fixed":               "#d2e4ff",
+            "surface-container":           "#efedf0",
+            "on-surface-variant":          "#43474d",
+            "on-tertiary":                 "#ffffff",
+            "tertiary":                    "#1a0b00",
+            "on-surface":                  "#1b1c1e",
+            "surface-container-low":       "#f5f3f6",
+            "background":                  "#faf9fb",
+            "on-background":               "#1b1c1e",
+            "surface-variant":             "#e3e2e5",
+            "on-tertiary-fixed":           "#2d1600",
+            "inverse-primary":             "#b0c8eb",
+            "on-primary-container":        "#768dad",
+            "surface-dim":                 "#dbd9dc",
+            "on-primary-fixed":            "#001c37",
+            "tertiary-fixed-dim":          "#eebd90",
+            "surface-tint":                "#49607e",
+            "on-secondary-fixed":          "#141c27",
+            "on-secondary-container":      "#5c6572",
+            "on-error-container":          "#93000a",
+            "surface-container-lowest":    "#ffffff",
+            "outline-variant":             "#c4c6ce",
+            "surface-bright":              "#faf9fb",
+            "secondary-fixed-dim":         "#bfc7d6",
+            "on-error":                    "#ffffff",
+            "tertiary-fixed":              "#ffdcbe",
+            "error":                       "#ba1a1a",
+            "surface-container-highest":   "#e3e2e5",
+            "on-primary-fixed-variant":    "#314865",
+            "inverse-surface":             "#2f3033",
+            "surface-container-high":      "#e9e8ea",
+            "secondary-fixed":             "#dbe3f3",
+            "primary-container":           "#0a2540",
+            "error-container":             "#ffdad6",
+            "primary-fixed-dim":           "#b0c8eb",
+            "surface":                     "#faf9fb",
+            "primary":                     "#000f22",
+            "tertiary-container":          "#381d00",
+            "on-tertiary-fixed-variant":   "#613f1c",
+            "on-secondary":                "#ffffff",
+            "secondary-container":         "#dbe3f3",
+            "on-primary":                  "#ffffff",
+            "inverse-on-surface":          "#f2f0f3",
+            "secondary":                   "#565f6c",
+            "outline":                     "#74777e"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg:      "0.5rem",
+            xl:      "0.75rem",
+            full:    "9999px"
+          },
+          spacing: {
+            "stack-lg":        "32px",
+            "stack-md":        "16px",
+            "stack-sm":        "8px",
+            "unit":            "8px",
+            "container-margin":"24px",
+            "card-padding":    "24px",
+            "gutter":          "16px"
+          },
+          fontFamily: {
+            "display-lg":           ["Plus Jakarta Sans"],
+            "body-sm":              ["Nunito Sans"],
+            "body-md":              ["Nunito Sans"],
+            "headline-sm":          ["Plus Jakarta Sans"],
+            "label-md":             ["Nunito Sans"],
+            "headline-lg":          ["Plus Jakarta Sans"],
+            "body-lg":              ["Nunito Sans"],
+            "headline-lg-mobile":   ["Plus Jakarta Sans"],
+            "headline-md":          ["Plus Jakarta Sans"]
+          },
+          fontSize: {
+            "display-lg":         ["48px", { lineHeight: "1.2",  letterSpacing: "-0.02em", fontWeight: "700" }],
+            "body-sm":            ["14px", { lineHeight: "1.5",  fontWeight: "400" }],
+            "body-md":            ["16px", { lineHeight: "1.6",  fontWeight: "400" }],
+            "headline-sm":        ["20px", { lineHeight: "1.4",  fontWeight: "600" }],
+            "label-md":           ["12px", { lineHeight: "1",    letterSpacing: "0.05em", fontWeight: "700" }],
+            "headline-lg":        ["32px", { lineHeight: "1.25", fontWeight: "700" }],
+            "body-lg":            ["18px", { lineHeight: "1.6",  fontWeight: "400" }],
+            "headline-lg-mobile": ["28px", { lineHeight: "1.2",  fontWeight: "700" }],
+            "headline-md":        ["24px", { lineHeight: "1.3",  fontWeight: "600" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-background text-on-background font-body-md min-h-screen">
+
+  <!-- ===================== TOP NAV BAR ===================== -->
+  <nav class="topnav h-16 fixed top-0 right-0 w-full md:w-[calc(100%-260px)]
+              flex justify-between items-center px-container-margin
+              z-40 border-b border-outline-variant transition-all duration-300">
+
+    <!-- Izquierda: toggle móvil + título -->
+    <div class="flex items-center gap-stack-md">
+      <button
+        class="md:hidden text-primary hover:bg-surface-container-low p-unit rounded-full transition-colors"
+        aria-label="Abrir menú"
+        onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
+      >
+        <span class="material-symbols-outlined text-[24px]">menu</span>
+      </button>
+      <h1 class="font-headline-sm text-headline-sm text-primary md:hidden">Pool Guardian</h1>
+    </div>
+
+    <!-- Derecha: búsqueda + iconos -->
+    <div class="flex items-center gap-stack-md">
+      <div class="hidden md:flex relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+        <input
+          type="text"
+          placeholder="Buscar..."
+          aria-label="Buscar"
+          class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant
+                 rounded-full text-body-sm focus:border-primary focus:ring-1
+                 focus:ring-primary outline-none w-64 transition-all"
+        >
+      </div>
+
+      <button
+        class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low
+               p-2 rounded-full transition-colors relative"
+        aria-label="Notificaciones"
+      >
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="absolute top-1 right-2 w-2 h-2 bg-error rounded-full"></span>
+      </button>
+
+      <button
+        class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low
+               p-2 rounded-full transition-colors"
+        aria-label="Perfil de usuario"
+      >
+        <span class="material-symbols-outlined">account_circle</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===================== SIDE NAV BAR ===================== -->
+  <aside
+    id="sidebar"
+    class="sidebar w-[260px] h-screen fixed left-0 top-0 shadow-md border-r border-outline-variant
+           flex flex-col py-stack-md px-stack-sm z-50 transition-transform duration-300
+           -translate-x-full md:translate-x-0"
+  >
+    <!-- Logo + título -->
+    <div class="flex items-center gap-3 px-3 mb-stack-lg mt-stack-sm">
+      <div class="w-10 h-10 rounded-lg bg-surface-container-lowest flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-primary" style="font-variation-settings:'FILL' 1">water_drop</span>
+      </div>
+      <div>
+        <h2 class="font-headline-md text-headline-md font-bold text-on-primary leading-tight tracking-tight">Pool Guardian</h2>
+        <p class="font-label-md text-label-md text-on-primary-fixed-variant opacity-80 uppercase">Tech-Luxe Monitoring</p>
+      </div>
+      <!-- Cerrar en móvil -->
+      <button
+        class="md:hidden ml-auto text-on-primary opacity-70 hover:opacity-100"
+        aria-label="Cerrar menú"
+        onclick="document.getElementById('sidebar').classList.add('-translate-x-full')"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- Menú de navegación -->
+    <ul class="flex-1 overflow-y-auto sidebar-scroll flex flex-col gap-1 list-none p-0 m-0" role="list">
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">dashboard</span>
+        <span class="font-body-md text-body-md">Dashboard</span>
+      </a></li>
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">group</span>
+        <span class="font-body-md text-body-md">Usuarios</span>
+      </a></li>
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">security</span>
+        <span class="font-body-md text-body-md">Roles</span>
+      </a></li>
+
+      <!-- Enlace activo -->
+      <li><a href="#" aria-current="page" class="sidebar-link-active flex items-center gap-3 px-4 py-3 rounded-lg font-bold transition-transform duration-150">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">pool</span>
+        <span class="font-body-md text-body-md">Piscinas</span>
+      </a></li>
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">water_drop</span>
+        <span class="font-body-md text-body-md">Mediciones</span>
+      </a></li>
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">psychology</span>
+        <span class="font-body-md text-body-md">Evaluaciones IA</span>
+      </a></li>
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">auto_awesome</span>
+        <span class="font-body-md text-body-md">Recomendaciones IA</span>
+      </a></li>
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">notifications</span>
+        <span class="font-body-md text-body-md">Notificaciones</span>
+      </a></li>
+
+      <li><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">assessment</span>
+        <span class="font-body-md text-body-md">Reportes</span>
+      </a></li>
+
+      <li class="mt-auto"><a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary-fixed-variant hover:text-on-primary hover:bg-primary-container transition-colors duration-200 group">
+        <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-150">settings</span>
+        <span class="font-body-md text-body-md">Configuración</span>
+      </a></li>
+
+    </ul>
+  </aside>
+
+  <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+  <main class="md:ml-[260px] pt-20 px-container-margin pb-stack-lg min-h-screen max-w-7xl mx-auto">
+
+    <!-- Encabezado + acción -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-stack-lg gap-stack-md">
+      <div>
+        <h2 class="font-headline-lg text-headline-lg text-primary">Gestión de Piscinas</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-1">Monitoreo en tiempo real y administración de activos.</p>
+      </div>
+      <button class="btn-primary-gradient bg-primary hover:bg-primary-container text-on-primary px-6 py-3 rounded-lg font-body-md font-semibold flex items-center gap-2 transition-opacity shadow-sm">
+        <span class="material-symbols-outlined">add</span>
+        Registrar piscina
+      </button>
+    </div>
+
+    <!-- Barra de filtros -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-stack-lg">
+
+      <div class="glass-card rounded-xl p-3 flex items-center gap-3 md:col-span-3">
+        <span class="material-symbols-outlined text-outline ml-2">filter_list</span>
+        <div class="h-6 w-px bg-outline-variant mx-2" aria-hidden="true"></div>
+
+        <label for="filter-usuario" class="sr-only">Filtrar por usuario</label>
+        <select id="filter-usuario" class="bg-transparent border-none text-body-sm font-body-sm text-on-surface focus:ring-0 py-1 cursor-pointer">
+          <option>Todos los Usuarios</option>
+          <option>Residencial</option>
+          <option>Comercial</option>
+        </select>
+
+        <label for="filter-estado" class="sr-only">Filtrar por estado</label>
+        <select id="filter-estado" class="bg-transparent border-none text-body-sm font-body-sm text-on-surface focus:ring-0 py-1 cursor-pointer">
+          <option>Todos los Estados</option>
+          <option>Óptimo</option>
+          <option>Requiere Atención</option>
+          <option>Crítico</option>
+        </select>
+
+        <label for="filter-temp" class="sr-only">Filtrar por temperatura</label>
+        <select id="filter-temp" class="bg-transparent border-none text-body-sm font-body-sm text-on-surface focus:ring-0 py-1 cursor-pointer hidden md:block">
+          <option>Temp: Cualquiera</option>
+          <option>&gt; 28°C (Alta)</option>
+          <option>&lt; 20°C (Baja)</option>
+        </select>
+      </div>
+
+      <button class="glass-card rounded-xl p-3 flex items-center justify-center gap-2 bg-error-container/30 border-error/20 cursor-pointer hover:bg-error-container/50 transition-colors">
+        <span class="material-symbols-outlined text-error">thermostat</span>
+        <span class="font-label-md text-label-md text-error">VER TEMPERATURAS ALTAS</span>
+      </button>
+
+    </div>
+
+    <!-- ===== BENTO GRID ===== -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-container-margin">
+
+      <!-- Tarjeta de alerta: temperatura alta (4 cols) -->
+      <article class="md:col-span-4 glass-card rounded-xl overflow-hidden temp-high-glow flex flex-col">
+        <div class="p-card-padding border-b border-outline-variant bg-surface-container-lowest/50 flex justify-between items-start">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-2 h-2 rounded-full bg-error animate-pulse" aria-hidden="true"></span>
+              <span class="font-label-md text-label-md text-error uppercase tracking-wider">Alerta de Temperatura</span>
+            </div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface">Club Social Norte</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Usuario: Admin_Comercial</p>
+          </div>
+          <button class="text-on-surface-variant hover:text-primary" aria-label="Más opciones">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+        </div>
+
+        <div class="p-card-padding flex-1">
+          <div class="flex items-end gap-2 mb-4">
+            <span class="font-display-lg text-display-lg text-error leading-none">31.5°</span>
+            <span class="font-body-md text-body-md text-on-surface-variant mb-1">C</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="bg-surface-container-low rounded-lg p-3">
+              <div class="text-label-md font-label-md text-on-surface-variant mb-1">pH</div>
+              <div class="text-body-lg font-bold text-on-surface">7.6</div>
+            </div>
+            <div class="bg-surface-container-low rounded-lg p-3">
+              <div class="text-label-md font-label-md text-on-surface-variant mb-1">Cloro (ppm)</div>
+              <div class="text-body-lg font-bold text-on-surface">1.2</div>
+            </div>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">schedule</span>
+            Hace 5 min
+          </p>
+        </div>
+
+        <div class="p-3 bg-surface-container-lowest border-t border-outline-variant flex justify-end gap-2">
+          <button class="px-4 py-2 text-body-sm font-semibold text-secondary hover:bg-surface-container-low rounded-lg transition-colors">Ignorar</button>
+          <button class="px-4 py-2 text-body-sm font-semibold text-error hover:bg-error-container rounded-lg transition-colors">Ver Detalles</button>
+        </div>
+      </article>
+
+      <!-- Tarjeta piscina: Óptimo (4 cols) -->
+      <article class="md:col-span-4 pool-card-normal glass-card rounded-xl overflow-hidden flex flex-col">
+        <div class="p-card-padding border-b border-outline-variant flex justify-between items-start relative">
+          <div class="absolute top-0 left-0 w-full h-1 bg-secondary-fixed" aria-hidden="true"></div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 rounded bg-[#dbe3f3] text-[#314865] font-label-md text-[10px] uppercase tracking-wider">Óptimo</span>
+            </div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface">Residencia Silva</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Usuario: m.silva89</p>
+          </div>
+          <button class="text-on-surface-variant hover:text-primary" aria-label="Más opciones">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+        </div>
+
+        <div class="p-card-padding flex-1 relative">
+          <div class="absolute bottom-0 left-0 w-full h-16 chart-gradient opacity-50" aria-hidden="true"></div>
+          <div class="flex items-end gap-2 mb-4 relative z-10">
+            <span class="font-headline-lg text-headline-lg text-on-surface leading-none">26.0°</span>
+            <span class="font-body-md text-body-md text-on-surface-variant mb-1">C</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4 relative z-10">
+            <div class="bg-surface-container-low rounded-lg p-3">
+              <div class="text-label-md font-label-md text-on-surface-variant mb-1">pH</div>
+              <div class="text-body-lg font-bold text-on-surface">7.4</div>
+            </div>
+            <div class="bg-surface-container-low rounded-lg p-3">
+              <div class="text-label-md font-label-md text-on-surface-variant mb-1">Cloro (ppm)</div>
+              <div class="text-body-lg font-bold text-on-surface">2.5</div>
+            </div>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 relative z-10">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">schedule</span>
+            Hace 12 min
+          </p>
+        </div>
+
+        <div class="p-3 bg-surface border-t border-outline-variant flex justify-end gap-2">
+          <button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors" aria-label="Editar">
+            <span class="material-symbols-outlined text-[20px]">edit</span>
+          </button>
+          <button class="p-2 text-on-surface-variant hover:bg-error-container hover:text-error rounded-lg transition-colors" aria-label="Eliminar">
+            <span class="material-symbols-outlined text-[20px]">delete</span>
+          </button>
+          <div class="w-px h-6 bg-outline-variant mx-1 self-center" aria-hidden="true"></div>
+          <button class="px-4 py-2 text-body-sm font-semibold text-primary hover:bg-primary-container rounded-lg transition-colors">Ver Detalles</button>
+        </div>
+      </article>
+
+      <!-- Tarjeta piscina: Atención pH (4 cols) -->
+      <article class="md:col-span-4 pool-card-normal glass-card rounded-xl overflow-hidden flex flex-col">
+        <div class="p-card-padding border-b border-outline-variant flex justify-between items-start relative">
+          <div class="absolute top-0 left-0 w-full h-1 bg-tertiary-fixed-dim" aria-hidden="true"></div>
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 rounded bg-tertiary-fixed text-on-tertiary-fixed-variant font-label-md text-[10px] uppercase tracking-wider">Atención pH</span>
+            </div>
+            <h3 class="font-headline-sm text-headline-sm text-on-surface">Complejo Deportivo Sur</h3>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">Usuario: dir_deportes</p>
+          </div>
+          <button class="text-on-surface-variant hover:text-primary" aria-label="Más opciones">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+        </div>
+
+        <div class="p-card-padding flex-1">
+          <div class="flex items-end gap-2 mb-4">
+            <span class="font-headline-lg text-headline-lg text-on-surface leading-none">27.2°</span>
+            <span class="font-body-md text-body-md text-on-surface-variant mb-1">C</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="bg-tertiary-fixed/30 border border-tertiary-fixed-dim rounded-lg p-3">
+              <div class="text-label-md font-label-md text-on-surface-variant mb-1">pH</div>
+              <div class="text-body-lg font-bold text-on-tertiary-fixed-variant">8.2</div>
+            </div>
+            <div class="bg-surface-container-low rounded-lg p-3">
+              <div class="text-label-md font-label-md text-on-surface-variant mb-1">Cloro (ppm)</div>
+              <div class="text-body-lg font-bold text-on-surface">1.8</div>
+            </div>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]" aria-hidden="true">schedule</span>
+            Hace 1 hora
+          </p>
+        </div>
+
+        <div class="p-3 bg-surface border-t border-outline-variant flex justify-end gap-2">
+          <button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors" aria-label="Editar">
+            <span class="material-symbols-outlined text-[20px]">edit</span>
+          </button>
+          <button class="p-2 text-on-surface-variant hover:bg-error-container hover:text-error rounded-lg transition-colors" aria-label="Eliminar">
+            <span class="material-symbols-outlined text-[20px]">delete</span>
+          </button>
+          <div class="w-px h-6 bg-outline-variant mx-1 self-center" aria-hidden="true"></div>
+          <button class="px-4 py-2 text-body-sm font-semibold text-primary hover:bg-primary-container rounded-lg transition-colors">Ver Detalles</button>
+        </div>
+      </article>
+
+      <!-- Tarjeta de resumen general (8 cols) -->
+      <section class="md:col-span-8 summary-card glass-card rounded-xl overflow-hidden p-card-padding flex flex-col md:flex-row items-center gap-stack-lg">
+        <div class="flex-1">
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-2">Resumen General</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-6">Estado global de los activos monitoreados en la red actual.</p>
+          <div class="flex gap-stack-lg">
+            <div>
+              <div class="text-display-lg font-display-lg text-primary">3</div>
+              <div class="text-label-md font-label-md text-on-surface-variant mt-1">TOTAL PISCINAS</div>
+            </div>
+            <div class="w-px bg-outline-variant" aria-hidden="true"></div>
+            <div>
+              <div class="text-headline-lg font-headline-lg text-error">1</div>
+              <div class="text-label-md font-label-md text-on-surface-variant mt-1">CRÍTICO</div>
+            </div>
+            <div class="w-px bg-outline-variant" aria-hidden="true"></div>
+            <div>
+              <div class="text-headline-lg font-headline-lg text-[#ae835a]">1</div>
+              <div class="text-label-md font-label-md text-on-surface-variant mt-1">ATENCIÓN</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini mapa -->
+        <div
+          class="w-full md:w-64 h-48 bg-surface-container-low rounded-lg border border-outline-variant overflow-hidden relative"
+          role="img"
+          aria-label="Mapa de ubicaciones de piscinas"
+        >
+          <!-- Patrón de fondo del mapa -->
+          <div class="absolute inset-0 opacity-50"
+               style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMiIgZmlsbD0iI2M0YzZjZSIvPgo8L3N2Zz4=');"
+               aria-hidden="true">
+          </div>
+          <!-- Pines de ubicación -->
+          <span class="material-symbols-outlined text-error absolute top-1/4 left-1/3 drop-shadow-md" style="font-variation-settings:'FILL' 1" aria-hidden="true">location_on</span>
+          <span class="material-symbols-outlined text-primary absolute bottom-1/3 right-1/4 drop-shadow-md" style="font-variation-settings:'FILL' 1" aria-hidden="true">location_on</span>
+          <span class="material-symbols-outlined text-[#ae835a] absolute top-1/2 left-2/3 drop-shadow-md" style="font-variation-settings:'FILL' 1" aria-hidden="true">location_on</span>
+        </div>
+      </section>
+
+      <!-- Tarjeta de acción rápida: nueva instalación (4 cols) -->
+      <div class="md:col-span-4 rounded-xl border border-dashed border-primary-fixed-dim bg-transparent
+                  flex flex-col items-center justify-center p-card-padding
+                  hover:bg-surface-container-low transition-colors cursor-pointer min-h-[200px]"
+           role="button"
+           tabindex="0"
+           aria-label="Agregar nueva instalación"
+      >
+        <div class="w-12 h-12 rounded-full bg-primary-container text-primary flex items-center justify-center mb-4" aria-hidden="true">
+          <span class="material-symbols-outlined">add</span>
+        </div>
+        <h4 class="font-headline-sm text-headline-sm text-primary">Nueva Instalación</h4>
+        <p class="text-center font-body-sm text-body-sm text-on-surface-variant mt-2">Agregue un nuevo sensor o piscina a la red.</p>
+      </div>
+
+    </div><!-- /bento grid -->
+  </main>
+
+</body>
+</html>
