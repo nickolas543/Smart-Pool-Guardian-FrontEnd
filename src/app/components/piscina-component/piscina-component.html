@@ -1,0 +1,138 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="./piscina-component.css">
+
+<h2 class="sr-only">Gestión de Piscinas — monitoreo en tiempo real y administración de activos.</h2>
+
+<div class="app">
+
+  <app-sidebar-component></app-sidebar-component>
+
+  <div class="main">
+
+    <app-navbar-component></app-navbar-component>
+
+    <main class="canvas">
+
+      <div class="phdr">
+        <div class="phdr-l">
+          <h1>Gestión de Piscinas</h1>
+          <p>Monitoreo en tiempo real y administración de activos.</p>
+        </div>
+        <div class="phdr-r">
+          <button class="btn-add"><i class="ti ti-plus" aria-hidden="true"></i> Registrar piscina</button>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div class="filter-left">
+          <i class="ti ti-filter f-ico" aria-hidden="true"></i>
+          <div class="f-sep"></div>
+          <button class="f-sel">Todos los Usuarios <i class="ti ti-chevron-down" aria-hidden="true"></i></button>
+          <button class="f-sel">Todos los Estados <i class="ti ti-chevron-down" aria-hidden="true"></i></button>
+          <button class="f-sel">Temp: Cualquiera <i class="ti ti-chevron-down" aria-hidden="true"></i></button>
+        </div>
+        <button class="f-alert">
+          <i class="ti ti-temperature" aria-hidden="true"></i>
+          <span>Ver temperaturas<br>altas</span>
+        </button>
+      </div>
+
+      <div class="pgrid">
+
+        @for (p of ejemplos; track $index) {
+          <div class="pcard"
+               [class.alerta]="p.estado === 'alerta'"
+               [class.optimo]="p.estado === 'optimo'"
+               [class.atencion]="p.estado === 'atencion'">
+
+            <div class="pc-head">
+              <span class="pc-badge"
+                    [class.alerta]="p.estado === 'alerta'"
+                    [class.optimo]="p.estado === 'optimo'"
+                    [class.atencion]="p.estado === 'atencion'">
+                @if (p.estado === 'alerta') { <span class="pc-dot"></span> }
+                {{ p.badge }}
+              </span>
+              <i class="ti ti-dots-vertical pc-menu" aria-hidden="true"></i>
+            </div>
+
+            <div class="pc-name">{{ p.nombre }}</div>
+            <div class="pc-user">Usuario: {{ p.usuario }}</div>
+
+            <div class="pc-temp" [class.alerta]="p.estado === 'alerta'">
+              <span class="pc-temp-v">{{ p.temp | number:'1.1-1' }}°</span>
+              <span class="pc-temp-u">C</span>
+            </div>
+
+            <div class="pc-metrics">
+              <div class="metric" [class.warn]="p.phWarn">
+                <div class="m-l">pH</div>
+                <div class="m-v">{{ p.ph }}</div>
+              </div>
+              <div class="metric">
+                <div class="m-l">Cloro (ppm)</div>
+                <div class="m-v">{{ p.cloro }}</div>
+              </div>
+            </div>
+
+            <div class="pc-time">
+              <i class="ti ti-clock" aria-hidden="true"></i> {{ p.tiempo }}
+            </div>
+
+            <div class="pc-foot">
+              @if (p.estado === 'alerta') {
+                <button class="pc-link muted">Ignorar</button>
+                <button class="pc-link">Ver Detalles</button>
+              } @else {
+                <button class="pc-iconbtn" aria-label="Editar"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+                <button class="pc-iconbtn" aria-label="Eliminar"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                <button class="pc-link">Ver Detalles</button>
+              }
+            </div>
+
+          </div>
+        }
+
+      </div>
+
+      <div class="bottom-row">
+
+        <div class="summary-card">
+          <div class="summary-info">
+            <h3>Resumen General</h3>
+            <p>Estado global de los activos monitoreados en la red actual.</p>
+            <div class="summary-stats">
+              <div class="stat">
+                <div class="stat-num">{{ resumen.total }}</div>
+                <div class="stat-lbl">Total<br>Piscinas</div>
+              </div>
+              <div class="stat-div"></div>
+              <div class="stat">
+                <div class="stat-num red">{{ resumen.critico }}</div>
+                <div class="stat-lbl">Crítico</div>
+              </div>
+              <div class="stat-div"></div>
+              <div class="stat">
+                <div class="stat-num amber">{{ resumen.atencion }}</div>
+                <div class="stat-lbl">Atención</div>
+              </div>
+            </div>
+          </div>
+          <div class="summary-map">
+            <i class="ti ti-map-pin pin red" aria-hidden="true"></i>
+            <i class="ti ti-map-pin pin dark" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="install-card">
+          <div class="install-plus"><i class="ti ti-plus" aria-hidden="true"></i></div>
+          <div class="install-title">Nueva Instalación</div>
+          <div class="install-desc">Agregue un nuevo sensor o piscina a la red.</div>
+        </div>
+
+      </div>
+
+    </main>
+    <div class="foot">© 2024 Smart Pool Guardian — Todos los derechos reservados</div>
+  </div>
+</div>
