@@ -31,7 +31,7 @@
           <div class="sc-top">
             <div class="si b"><i class="ti ti-ripple"></i></div><span class="sbadge b">Total</span>
           </div>
-          <div class="sc-num">{{ datasource.length }}</div>
+          <div class="sc-num">{{ datasource().length }}</div>
           <div class="sc-lbl">Piscinas activas</div>
         </div>
         <div class="sc">
@@ -116,7 +116,7 @@
             </div>
             <div class="pool-list">
 
-              @for (piscina of datasource; track $index) {
+              @for (piscina of datasource(); track $index) {
                 <div class="pr ok">
                   <div class="pr-l">
                     <div class="pr-ico ok"><i class="ti ti-ripple"></i></div>

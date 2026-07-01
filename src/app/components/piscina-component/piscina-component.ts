@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 import { PiscinaService } from '../../services/piscina-service';
 
@@ -8,6 +8,7 @@ import { MedicionService } from '../../services/medicion-service';
 import { NavbarComponent } from "../dashboard-main/navbar-component/navbar-component";
 import { SidebarComponent } from "../dashboard-main/sidebar-component/sidebar-component";
 import { ActivatedRoute } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-piscinas',
@@ -18,10 +19,10 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PiscinasComponent implements OnInit {
 
-  piscinas: PiscinasPorUsuarioDTO[] = [];
-  alertas:any[]=[];
+  piscinas = signal<PiscinasPorUsuarioDTO[]>([]);
+  alertas: any[] = [];
 
-  idUsuario = 1;
+  idUsuario = 0;
 
   // Datos de ejemplo para la vista — reemplazar por datos reales del backend.
   ejemplos = [
@@ -71,32 +72,59 @@ export class PiscinasComponent implements OnInit {
     private piscinaService: PiscinaService,
     private route: ActivatedRoute,
     private medicionService: MedicionService
-  ) {}
+  ) { }
+
+  private platformId = inject(PLATFORM_ID);
 
   ngOnInit(): void {
+    if (!this.obtenerIdUsuario()) {
+      return;
+    }
     this.cargarPiscinas();
     this.cargarAlertas();
   }
 
-  cargarPiscinas() {
+  private obtenerIdUsuario(): boolean {
 
-    this.idUsuario = Number(this.route.snapshot.paramMap.get('id'));
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
 
-    this.piscinaService.listPiscinas(this.idUsuario).subscribe(data => {
+    const token = sessionStorage.getItem('token');
 
-      this.piscinas = data;
+    if (!token) {
+      return false;
+    }
 
-    })
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(token);
+
+    this.idUsuario = Number(decodedToken.id);
+
+    return true;
   }
 
-  eliminar(idPiscina:number){
+  cargarPiscinas() {
 
-    if(!confirm('¿Eliminar piscina?')){
+    this.piscinaService.listPiscinas(this.idUsuario).subscribe({
+      next: (data) => {
+        this.piscinas.set(data);
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+
+  }
+
+  eliminar(idPiscina: number) {
+
+    if (!confirm('¿Eliminar piscina?')) {
       return;
     }
 
     this.piscinaService
-      .eliminar(this.idUsuario,idPiscina)
+      .eliminar(this.idUsuario, idPiscina)
       .subscribe({
 
         next: () => {
@@ -113,21 +141,21 @@ export class PiscinasComponent implements OnInit {
       });
 
   }
-  cargarAlertas(){
+  cargarAlertas() {
 
-  this.medicionService
+    this.medicionService
       .obtenerAlertas(this.idUsuario)
       .subscribe({
 
-        next:(data:any)=>{
+        next: (data: any) => {
 
-          if(Array.isArray(data)){
-            this.alertas=data;
+          if (Array.isArray(data)) {
+            this.alertas = data;
           }
 
         },
 
-        error:(err)=>{
+        error: (err) => {
 
           console.error(err);
 
@@ -135,6 +163,6 @@ export class PiscinasComponent implements OnInit {
 
       });
 
-}
+  }
 
 }

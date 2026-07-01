@@ -45,7 +45,7 @@ export class UsuarioInsert implements OnInit {
 
     this.uS.insert(this.usuario).subscribe({
       next: (data) => {
-        this.router.navigate(["/dashboard"])
+        this.router.navigate(["/usuarios/login"])
       },
       error: (e) => {
         console.log(e);

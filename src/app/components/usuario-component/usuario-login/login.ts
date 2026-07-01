@@ -2,8 +2,8 @@ import { Component, OnInit, HostListener, ElementRef, ViewChild } from '@angular
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { UsuarioService } from '../../../services/usuario-service';
 import { JwtRequestDTO } from '../../../models/request/JwtRequestDTO';
+import { LoginService } from '../../../services/login-service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +19,7 @@ export class UsuarioLogin implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private usuarioService: UsuarioService,
+    private lS: LoginService,
     private router: Router,
   ) {}
 
@@ -27,7 +27,6 @@ export class UsuarioLogin implements OnInit {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required]],
       password: ['', [Validators.required]],
-      rememberMe: [false],
     });
   }
 
@@ -36,7 +35,7 @@ export class UsuarioLogin implements OnInit {
     this.hidePassword = !this.hidePassword;
   }
 
-  // Método para procesar el inicio de sesión con redes sociales
+  /* Método para procesar el inicio de sesión con redes sociales
   loginWithSocial(provider: string): void {
     console.log(`Iniciando sesión con la pasarela de: ${provider}`);
 
@@ -48,22 +47,36 @@ export class UsuarioLogin implements OnInit {
     }
   }
 
+  */
+
   onSubmit(): void {
   if (this.loginForm.valid) {
-    const bodyBackend: JwtRequestDTO = {
+
+    let request: JwtRequestDTO = {
       username: this.loginForm.value.email,
       password: this.loginForm.value.password
     };
 
-    this.usuarioService.login(bodyBackend).subscribe({
-      next: (response) => {
-        const token = response.token; 
-        localStorage.setItem('token', token);
+    this.lS.login(request).subscribe({
+      next: (response: any) => {
+
+        sessionStorage.setItem('token', response.jwttoken);
         this.router.navigate(['/dashboard']); 
+        
       },
-      error: (err) => {
-        console.error('Error de autenticación:', err);
-        alert('Nombre de usuario o contraseña incorrectos. Por favor, intente de nuevo.');
+
+      error: (error) => {
+        console.log(error);
+
+        if (error.status === 401) {
+
+          alert('Credenciales incorrectas. Por favor, verifique su correo electrónico y contraseña.');
+
+        } else {
+
+          alert('Ocurrió un error inesperado. Por favor, inténtelo de nuevo más tarde.');
+
+        }
       }
     });
   }

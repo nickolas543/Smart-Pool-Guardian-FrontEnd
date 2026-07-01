@@ -18,12 +18,6 @@ export class PiscinaService {
 
   constructor(private http: HttpClient) {}
 
-  listar(idUsuario:number):Observable<PiscinasPorUsuarioDTO[]>{
-    return this.http.get<PiscinasPorUsuarioDTO[]>(
-      `${this.url}?idUsuario=${idUsuario}`
-    );
-  }
-
   registrar(
       idUsuario:number,
       piscina:PiscinaRequestDTO
