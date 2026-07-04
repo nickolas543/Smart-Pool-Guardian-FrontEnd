@@ -16,7 +16,7 @@ import { UsuarioService } from '../../services/usuario-service';
 
 @Component({
   selector: 'app-dashboard-main',
-  imports: [SidebarComponent, NavbarComponent, CommonModule,DatePipe],
+  imports: [SidebarComponent, NavbarComponent, CommonModule, DatePipe],
   templateUrl: './dashboard-main.html',
   styleUrl: './dashboard-main.css',
 })
@@ -30,6 +30,10 @@ export class DashboradMain implements OnInit {
   notificacionesNoLeidas = signal<NotificacionResponseDTO[]>([]);
   alertaAlgas = signal<string>('');
   recomendacionesCriticas = signal<any[]>([]);
+
+  // Recomendacion por piscina
+  recomendacionPiscina = signal<string>('');
+  piscinaSeleccionada = signal<number | null>(null);
 
   // Stats
   totalPiscinas = signal<number>(0);
@@ -90,8 +94,17 @@ export class DashboradMain implements OnInit {
   }
 
   cargarInactivos() {
-  this.usuarioS.obtenerInactivos().subscribe(data => {
-    this.usuariosInactivos.set(data.length);
-  });
-}
+    this.usuarioS.obtenerInactivos().subscribe(data => {
+      this.usuariosInactivos.set(data.length);
+    });
+  }
+
+  seleccionarPiscina(piscinaId: number) {
+    this.piscinaSeleccionada.set(piscinaId);
+    this.recomendacionPiscina.set('');
+    this.rS.porPiscina(piscinaId).subscribe({
+      next: (data) => this.recomendacionPiscina.set(data),
+      error: (err) => console.error(err)
+    });
+  }
 }

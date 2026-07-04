@@ -19,7 +19,9 @@
           <p>Monitoreo en tiempo real y administración de activos.</p>
         </div>
         <div class="phdr-r">
-          <button class="btn-add"><i class="ti ti-plus" aria-hidden="true"></i> Registrar piscina</button>
+          <button class="btn-add" (click)="abrirModal()">
+            <i class="ti ti-plus" aria-hidden="true"></i> Registrar piscina
+          </button>
         </div>
       </div>
 
@@ -39,7 +41,7 @@
 
       <div class="pgrid">
 
-        @for (p of ejemplos; track $index) {
+        @for (p of piscinas(); track $index) {
           <div class="pcard"
                [class.alerta]="p.estado === 'alerta'"
                [class.optimo]="p.estado === 'optimo'"
@@ -57,7 +59,7 @@
             </div>
 
             <div class="pc-name">{{ p.nombre }}</div>
-            <div class="pc-user">Usuario: {{ p.usuario }}</div>
+            <div class="pc-user">Volumen: {{ p.volumen }} m³</div>
 
             <div class="pc-temp" [class.alerta]="p.estado === 'alerta'">
               <span class="pc-temp-v">{{ p.temp | number:'1.1-1' }}°</span>
@@ -85,11 +87,17 @@
                 <button class="pc-link">Ver Detalles</button>
               } @else {
                 <button class="pc-iconbtn" aria-label="Editar"><i class="ti ti-pencil" aria-hidden="true"></i></button>
-                <button class="pc-iconbtn" aria-label="Eliminar"><i class="ti ti-trash" aria-hidden="true"></i></button>
+                <button class="pc-iconbtn" (click)="eliminar(p.piscinaId)" aria-label="Eliminar"><i class="ti ti-trash" aria-hidden="true"></i></button>
                 <button class="pc-link">Ver Detalles</button>
               }
             </div>
 
+          </div>
+        }
+
+        @if (piscinas().length === 0) {
+          <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #9ab5cc; font-size: 14px;">
+            No hay piscinas registradas
           </div>
         }
 
@@ -124,7 +132,7 @@
           </div>
         </div>
 
-        <div class="install-card">
+        <div class="install-card" (click)="abrirModal()">
           <div class="install-plus"><i class="ti ti-plus" aria-hidden="true"></i></div>
           <div class="install-title">Nueva Instalación</div>
           <div class="install-desc">Agregue un nuevo sensor o piscina a la red.</div>
@@ -136,3 +144,34 @@
     <div class="foot">© 2024 Smart Pool Guardian — Todos los derechos reservados</div>
   </div>
 </div>
+
+@if (mostrarModal()) {
+  <div class="modal-overlay" (click)="cerrarModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+
+      <div class="modal-hdr">
+        <h2>Registrar Piscina</h2>
+        <button class="modal-close" (click)="cerrarModal()">
+          <i class="ti ti-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-field">
+          <label>Nombre de la piscina</label>
+          <input type="text" [(ngModel)]="form.nombrePiscina" placeholder="Ej: Piscina Principal" />
+        </div>
+        <div class="modal-field">
+          <label>Volumen (m³)</label>
+          <input type="number" [(ngModel)]="form.volumen" placeholder="Ej: 50" />
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+        <button class="btn-save" (click)="registrar()">Guardar</button>
+      </div>
+
+    </div>
+  </div>
+}
