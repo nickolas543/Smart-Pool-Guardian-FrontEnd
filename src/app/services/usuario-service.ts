@@ -24,4 +24,8 @@ export class UsuarioService {
   login(credentials: JwtRequestDTO): Observable<any> {
     return this.http.post<any>(`${base_url}/login`, credentials);
   }
+
+  obtenerInactivos() {
+    return this.http.get<any[]>(`${this.urlUsuarios}/reporte-usuarios-inactivos`);
+  }
 }
