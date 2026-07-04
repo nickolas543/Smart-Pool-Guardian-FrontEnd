@@ -2,57 +2,96 @@ import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { SidebarComponent } from './sidebar-component/sidebar-component';
 import { NavbarComponent } from './navbar-component/navbar-component';
 import { PiscinaService } from '../../services/piscina-service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PiscinasPorUsuarioDTO } from "../../models/dtos/PiscinasPorUsuarioDTO"
+import { NotificacionService } from '../../services/notificacion-service';
+import { MedicionService } from '../../services/medicion-service';
+import { RecomendacionService } from '../../services/recomendacion-service';
+import { ActivatedRoute } from '@angular/router';
+import { PiscinasPorUsuarioDTO } from '../../models/dtos/PiscinasPorUsuarioDTO';
+import { NotificacionResponseDTO } from '../../models/response/NotificacionResponseDTO';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { UsuarioService } from '../../services/usuario-service';
 
 @Component({
   selector: 'app-dashboard-main',
-  imports: [SidebarComponent, NavbarComponent],
+  imports: [SidebarComponent, NavbarComponent, CommonModule,DatePipe],
   templateUrl: './dashboard-main.html',
   styleUrl: './dashboard-main.css',
 })
 export class DashboradMain implements OnInit {
 
-  datasource = signal<PiscinasPorUsuarioDTO[]>([]);
-  id: number = 0
+  id: number = 0;
+  usuariosInactivos = signal<number>(0);
 
-  constructor(
-    private route: ActivatedRoute,
-    private pS: PiscinaService
-  ) { }
+  // Cards
+  piscinas = signal<PiscinasPorUsuarioDTO[]>([]);
+  notificacionesNoLeidas = signal<NotificacionResponseDTO[]>([]);
+  alertaAlgas = signal<string>('');
+  recomendacionesCriticas = signal<any[]>([]);
 
-  ngOnInit(): void {
-
-    this.cargarPiscinas();
-
-  }
+  // Stats
+  totalPiscinas = signal<number>(0);
+  totalNotifs = signal<number>(0);
 
   private platformId = inject(PLATFORM_ID);
 
-  cargarPiscinas() {
+  constructor(
+    private route: ActivatedRoute,
+    private pS: PiscinaService,
+    private nS: NotificacionService,
+    private mS: MedicionService,
+    private rS: RecomendacionService,
+    private usuarioS: UsuarioService,
+  ) {}
 
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
 
     const helper = new JwtHelperService();
-
     const token = sessionStorage.getItem('token');
-
     if (!token) return;
 
     const decodedToken = helper.decodeToken(token);
-
     this.id = Number(decodedToken.id);
 
-    this.pS.listPiscinas(this.id).subscribe(data => {
-
-      this.datasource.set(data);
-
-    });
-
+    this.cargarPiscinas();
+    this.cargarNotificaciones();
+    this.cargarAlertas();
+    this.cargarRecomendaciones();
+    this.cargarInactivos();
   }
 
+  cargarPiscinas() {
+    this.pS.listPiscinas(this.id).subscribe(data => {
+      this.piscinas.set(data);
+      this.totalPiscinas.set(data.length);
+    });
+  }
+
+  cargarNotificaciones() {
+    this.nS.listarNoLeidas(this.id).subscribe(data => {
+      this.notificacionesNoLeidas.set(data);
+      this.totalNotifs.set(data.length);
+    });
+  }
+
+  cargarAlertas() {
+    this.mS.obtenerAlertas(this.id).subscribe(data => {
+      this.alertaAlgas.set(data);
+    });
+  }
+
+  cargarRecomendaciones() {
+    this.rS.porEvaluacionesCriticas().subscribe(data => {
+      this.recomendacionesCriticas.set(data);
+    });
+  }
+
+  cargarInactivos() {
+  this.usuarioS.obtenerInactivos().subscribe(data => {
+    this.usuariosInactivos.set(data.length);
+  });
+}
 }

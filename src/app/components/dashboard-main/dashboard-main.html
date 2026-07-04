@@ -1,15 +1,18 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="./dashboard-main.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
+/>
+<link rel="stylesheet" href="./dashboard-main.css" />
 
-<h2 class="sr-only">Pool Guardian — panel de administración con estadísticas, estado de piscinas, alertas y
-  recomendaciones IA.</h2>
+<h2 class="sr-only">
+  Pool Guardian — panel de administración con estadísticas, estado de piscinas, alertas y
+  recomendaciones IA.
+</h2>
 
 <div class="app">
-
   <app-sidebar-component></app-sidebar-component>
 
   <div class="main">
-
     <app-navbar-component></app-navbar-component>
 
     <main class="canvas">
@@ -19,64 +22,69 @@
           <p>Estado general de todas las instalaciones monitorizadas</p>
         </div>
         <div class="phdr-r">
-          <button class="btn-o"><i class="ti ti-download" style="font-size:13px" aria-hidden="true"></i>
-            Exportar</button>
-          <button class="btn-p"><i class="ti ti-plus" style="font-size:13px" aria-hidden="true"></i> Nueva
-            piscina</button>
+          <button class="btn-o">
+            <i class="ti ti-download" style="font-size: 13px" aria-hidden="true"></i> Exportar
+          </button>
+          <button class="btn-p">
+            <i class="ti ti-plus" style="font-size: 13px" aria-hidden="true"></i> Nueva piscina
+          </button>
         </div>
       </div>
 
       <div class="stat-row">
         <div class="sc">
           <div class="sc-top">
-            <div class="si b"><i class="ti ti-ripple"></i></div><span class="sbadge b">Total</span>
+            <div class="si b"><i class="ti ti-ripple"></i></div>
+            <span class="sbadge b">Total</span>
           </div>
-          <div class="sc-num">{{ datasource().length }}</div>
+          <div class="sc-num">{{ totalPiscinas() }}</div>
           <div class="sc-lbl">Piscinas activas</div>
         </div>
         <div class="sc">
           <div class="sc-top">
-            <div class="si r"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div><span
-              class="sbadge r">Crítico</span>
+            <div class="si r"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+            <span class="sbadge r">Crítico</span>
           </div>
-          <div class="sc-num">2</div>
+          <div class="sc-num">—</div>
           <div class="sc-lbl">Piscinas en riesgo</div>
         </div>
         <div class="sc">
           <div class="sc-top">
             <div class="si g"><i class="ti ti-droplet" aria-hidden="true"></i></div>
           </div>
-          <div class="sc-num">45</div>
+          <div class="sc-num">—</div>
           <div class="sc-lbl">Mediciones hoy</div>
         </div>
         <div class="sc">
           <div class="sc-top">
             <div class="si a"><i class="ti ti-bell-ringing" aria-hidden="true"></i></div>
           </div>
-          <div class="sc-num">8</div>
+          <div class="sc-num">{{ totalNotifs() }}</div>
           <div class="sc-lbl">Notifs. pendientes</div>
         </div>
         <div class="sc">
           <div class="sc-top">
             <div class="si p"><i class="ti ti-brain" aria-hidden="true"></i></div>
           </div>
-          <div class="sc-num">3</div>
+          <div class="sc-num">{{ recomendacionesCriticas().length }}</div>
           <div class="sc-lbl">Evals. IA críticas</div>
         </div>
         <div class="sc">
           <div class="sc-top">
             <div class="si gr"><i class="ti ti-user-off" aria-hidden="true"></i></div>
           </div>
-          <div class="sc-num">5</div>
+          <div class="sc-num">{{ usuariosInactivos() }}</div>
           <div class="sc-lbl">Usuarios inactivos</div>
         </div>
       </div>
 
       <div class="grid2">
-        <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display: flex; flex-direction: column; gap: 14px">
           <div class="card">
             <div class="card-hdr">
-              <h3><i class="ti ti-chart-line" aria-hidden="true"></i> Evolución de calidad del agua</h3>
+              <h3>
+                <i class="ti ti-chart-line" aria-hidden="true"></i> Evolución de calidad del agua
+              </h3>
               <div class="tabs">
                 <div class="tab on">pH</div>
                 <div class="tab">Cloro</div>
@@ -94,29 +102,67 @@
                   </defs>
                   <path
                     d="M0,90 C50,82 90,100 140,74 S220,55 270,68 S340,86 390,54 S450,36 500,50 S540,46 560,44 L560,128 L0,128Z"
-                    fill="url(#g1)" />
-                  <path d="M0,90 C50,82 90,100 140,74 S220,55 270,68 S340,86 390,54 S450,36 500,50 S540,46 560,44"
-                    fill="none" stroke="#2e5490" stroke-width="2" vector-effect="non-scaling-stroke" />
-                  <circle cx="390" cy="54" r="3.5" fill="#2e5490" stroke="#f8fafc" stroke-width="2" />
-                  <circle cx="500" cy="50" r="3.5" fill="#2e5490" stroke="#f8fafc" stroke-width="2" />
-                  <path d="M0,106 C50,99 90,110 140,96 S220,84 270,89 S340,98 390,80 S450,70 500,76 S540,73 560,71"
-                    fill="none" stroke="#1d9e75" stroke-width="1.5" stroke-dasharray="5 3"
-                    vector-effect="non-scaling-stroke" />
+                    fill="url(#g1)"
+                  />
+                  <path
+                    d="M0,90 C50,82 90,100 140,74 S220,55 270,68 S340,86 390,54 S450,36 500,50 S540,46 560,44"
+                    fill="none"
+                    stroke="#2e5490"
+                    stroke-width="2"
+                    vector-effect="non-scaling-stroke"
+                  />
+                  <circle
+                    cx="390"
+                    cy="54"
+                    r="3.5"
+                    fill="#2e5490"
+                    stroke="#f8fafc"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="500"
+                    cy="50"
+                    r="3.5"
+                    fill="#2e5490"
+                    stroke="#f8fafc"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M0,106 C50,99 90,110 140,96 S220,84 270,89 S340,98 390,80 S450,70 500,76 S540,73 560,71"
+                    fill="none"
+                    stroke="#1d9e75"
+                    stroke-width="1.5"
+                    stroke-dasharray="5 3"
+                    vector-effect="non-scaling-stroke"
+                  />
                 </svg>
                 <div class="chart-xlbl">
-                  <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Hoy</span>
+                  <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span
+                  ><span>Sáb</span><span>Hoy</span>
                 </div>
                 <div class="chart-legend">
-                  <span style="display:flex;align-items:center;gap:4px"><span class="leg-dot"
-                      style="background:#2e5490"></span>pH</span>
-                  <span style="display:flex;align-items:center;gap:4px"><span class="leg-dot"
-                      style="background:#1d9e75;height:1px;border-top:1.5px dashed #1d9e75;background:none;width:10px"></span>Ref.</span>
+                  <span style="display: flex; align-items: center; gap: 4px"
+                    ><span class="leg-dot" style="background: #2e5490"></span>pH</span
+                  >
+                  <span style="display: flex; align-items: center; gap: 4px"
+                    ><span
+                      class="leg-dot"
+                      style="
+                        background: #1d9e75;
+                        height: 1px;
+                        border-top: 1.5px dashed #1d9e75;
+                        background: none;
+                        width: 10px;
+                      "
+                    ></span
+                    >Ref.</span
+                  >
                 </div>
               </div>
             </div>
-            <div class="pool-list">
 
-              @for (piscina of datasource(); track $index) {
+            <div class="pool-list">
+              @for (piscina of piscinas(); track $index) {
                 <div class="pr ok">
                   <div class="pr-l">
                     <div class="pr-ico ok"><i class="ti ti-ripple"></i></div>
@@ -128,12 +174,16 @@
                   <div class="pr-stats">
                     <div class="prs">
                       <div class="prs-l">Volumen</div>
-                      <div class="prs-v">{{ piscina.volumen }}</div>
+                      <div class="prs-v">{{ piscina.volumen }} m³</div>
                     </div>
                   </div>
                 </div>
               }
-
+              @if (piscinas().length === 0) {
+                <div style="text-align: center; padding: 20px; color: #9ab5cc; font-size: 12px">
+                  No hay piscinas registradas
+                </div>
+              }
             </div>
           </div>
         </div>
@@ -142,22 +192,30 @@
           <div class="alert-card">
             <div class="alert-hdr">
               <h3><i class="ti ti-alert-triangle" aria-hidden="true"></i> Alertas críticas</h3>
-              <span class="nbadge">2 nuevas</span>
+              @if (totalNotifs() > 0) {
+                <span class="nbadge">{{ totalNotifs() }} nuevas</span>
+              }
             </div>
             <div class="alert-body">
-              <div class="ai">
-                <div class="ai-top"><span class="ai-title">pH alto — Las Palmas</span><span class="ai-time">hace 5
-                    min</span></div>
-                <div class="ai-desc">El pH superó el umbral seguro (8.1). Requiere atención inmediata.</div>
-              </div>
-              <div class="ai">
-                <div class="ai-top"><span class="ai-title">Bomba desconectada</span><span class="ai-time">hace 22
-                    min</span></div>
-                <div class="ai-desc">Fallo de conexión IoT en la bomba principal de Hotel Sol Azul.</div>
-              </div>
+              @for (notif of notificacionesNoLeidas().slice(0, 3); track $index) {
+                <div class="ai">
+                  <div class="ai-top">
+                    <span class="ai-title">{{ notif.tipoNotificacion }}</span>
+                    <span class="ai-time">{{ notif.fechaCreacion | date: 'dd/MM HH:mm' }}</span>
+                  </div>
+                  <div class="ai-desc">{{ notif.mensaje }}</div>
+                </div>
+              }
+              @if (notificacionesNoLeidas().length === 0) {
+                <div style="text-align: center; padding: 16px; color: #9ab5cc; font-size: 12px">
+                  Sin alertas pendientes
+                </div>
+              }
             </div>
-            <div class="alert-more">Ver todas las alertas <i class="ti ti-arrow-right" style="font-size:11px"
-                aria-hidden="true"></i></div>
+            <div class="alert-more">
+              Ver todas las alertas
+              <i class="ti ti-arrow-right" style="font-size: 11px" aria-hidden="true"></i>
+            </div>
           </div>
 
           <div class="ai-panel">
@@ -166,40 +224,27 @@
               <span>Recomendaciones IA</span>
             </div>
             <div class="ai-items">
-              <div class="ai-item">
-                <div class="ai-item-ico"><i class="ti ti-flask" aria-hidden="true"></i></div>
-                <div>
-                  <div class="ai-item-title">Ajuste químico sugerido</div>
-                  <div class="ai-item-desc">Hotel Sol Azul: añadir 500 ml de reductor de pH. Estabilización estimada en
-                    4 horas.</div>
-                  <div class="ai-link">Aplicar de forma remota <i class="ti ti-arrow-right" style="font-size:10px"
-                      aria-hidden="true"></i></div>
+              @for (rec of recomendacionesCriticas().slice(0, 3); track $index) {
+                <div class="ai-item">
+                  <div class="ai-item-ico"><i class="ti ti-flask" aria-hidden="true"></i></div>
+                  <div>
+                    <div class="ai-item-title">{{ rec.titulo ?? 'Recomendación IA' }}</div>
+                    <div class="ai-item-desc">{{ rec.descripcion ?? rec.contenido ?? rec }}</div>
+                  </div>
                 </div>
-              </div>
-              <hr class="ai-div">
-              <div class="ai-item">
-                <div class="ai-item-ico"><i class="ti ti-leaf" aria-hidden="true"></i></div>
-                <div>
-                  <div class="ai-item-title">Optimización energética</div>
-                  <div class="ai-item-desc">Club Central puede reducir el ciclo de filtrado 2 h/día sin afectar la
-                    calidad del agua.</div>
+                @if (!$last) {
+                  <hr class="ai-div" />
+                }
+              }
+              @if (recomendacionesCriticas().length === 0) {
+                <div style="text-align: center; padding: 16px; color: #5a86b8; font-size: 12px">
+                  Sin recomendaciones críticas
                 </div>
-              </div>
-              <hr class="ai-div">
-              <div class="ai-item">
-                <div class="ai-item-ico"><i class="ti ti-thermometer" aria-hidden="true"></i></div>
-                <div>
-                  <div class="ai-item-title">Temperatura elevada</div>
-                  <div class="ai-item-desc">Las Palmas: 31°C favorece crecimiento bacteriano. Se recomienda aumentar
-                    cloración.</div>
-                </div>
-              </div>
+              }
             </div>
           </div>
         </div>
       </div>
-
-
     </main>
     <div class="foot">© 2024 Smart Pool Guardian — Todos los derechos reservados</div>
   </div>
