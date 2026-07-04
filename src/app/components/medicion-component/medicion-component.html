@@ -1,0 +1,300 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="./medicion-component.css">
+
+<h2 class="sr-only">Mediciones de Calidad — monitoreo en tiempo real y registro histórico de parámetros.</h2>
+
+<div class="app">
+
+  <app-sidebar-component></app-sidebar-component>
+
+  <div class="main">
+
+    <app-navbar-component></app-navbar-component>
+
+    <main class="canvas">
+
+      <div class="phdr">
+        <div class="phdr-l">
+          <h1>Mediciones de Calidad</h1>
+          <p>Monitoreo en tiempo real y registro histórico de parámetros.</p>
+        </div>
+      </div>
+
+      <div class="bento">
+
+        <!-- Formulario Nueva Medición -->
+        <div class="form-card">
+          <div class="fc-head">
+            <i class="ti ti-circle-plus" aria-hidden="true"></i>
+            <h3>Nueva Medición</h3>
+          </div>
+
+          <form class="fc-form" [formGroup]="form" (ngSubmit)="registrar()" novalidate>
+
+            <div class="field">
+              <label>Piscina</label>
+              <select formControlName="idPiscina" [class.err]="invalido('idPiscina')">
+                <option [ngValue]="null" disabled>Seleccione una piscina…</option>
+                @for (p of piscinas; track p.piscinaId) {
+                  <option [ngValue]="p.piscinaId">{{ p.nombrePiscina }}</option>
+                }
+              </select>
+              @if (invalido('idPiscina')) {
+                <small class="err-msg">Seleccione una piscina.</small>
+              }
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>pH</label>
+                <input type="number" step="0.1" formControlName="nivelPh" [class.err]="invalido('nivelPh')">
+                @if (invalido('nivelPh')) {
+                  <small class="err-msg">
+                    @if (f['nivelPh'].errors?.['required']) { Requerido. } @else { Entre 0 y 14. }
+                  </small>
+                }
+              </div>
+              <div class="field">
+                <label>Cloro (ppm)</label>
+                <input type="number" step="0.1" formControlName="nivelCloro" [class.err]="invalido('nivelCloro')">
+                @if (invalido('nivelCloro')) {
+                  <small class="err-msg">
+                    @if (f['nivelCloro'].errors?.['required']) { Requerido. } @else { Entre 0 y 10. }
+                  </small>
+                }
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Temp (°C)</label>
+                <input type="number" step="0.5" formControlName="temperatura" [class.err]="invalido('temperatura')">
+                @if (invalido('temperatura')) {
+                  <small class="err-msg">
+                    @if (f['temperatura'].errors?.['required']) { Requerido. } @else { Entre 0 y 60. }
+                  </small>
+                }
+              </div>
+              <div class="field">
+                <label>Alcalinidad</label>
+                <input type="number" step="10" formControlName="alcalinidad" [class.err]="invalido('alcalinidad')">
+                @if (invalido('alcalinidad')) {
+                  <small class="err-msg">
+                    @if (f['alcalinidad'].errors?.['required']) { Requerido. } @else { Entre 0 y 500. }
+                  </small>
+                }
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Turbidez (NTU)</label>
+                <input type="number" step="0.1" formControlName="nivelTurbidez" [class.err]="invalido('nivelTurbidez')">
+                @if (invalido('nivelTurbidez')) {
+                  <small class="err-msg">
+                    @if (f['nivelTurbidez'].errors?.['required']) { Requerido. } @else { Entre 0 y 1000. }
+                  </small>
+                }
+              </div>
+              <div class="field">
+                <label>Dureza Calcio</label>
+                <input type="number" step="1" formControlName="durezaCalcio" [class.err]="invalido('durezaCalcio')">
+                @if (invalido('durezaCalcio')) {
+                  <small class="err-msg">
+                    @if (f['durezaCalcio'].errors?.['required']) { Requerido. } @else { Entre 0 y 1000. }
+                  </small>
+                }
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Color del agua</label>
+                <select formControlName="colorPiscina" [class.err]="invalido('colorPiscina')">
+                  @for (c of colores; track c) { <option [value]="c">{{ c }}</option> }
+                </select>
+              </div>
+              <div class="field">
+                <label>Olor</label>
+                <select formControlName="olor" [class.err]="invalido('olor')">
+                  @for (o of olores; track o) { <option [value]="o">{{ o }}</option> }
+                </select>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label>Tipo de medición</label>
+                <select formControlName="tipoMedicion" [class.err]="invalido('tipoMedicion')">
+                  @for (t of tipos; track t) { <option [value]="t">{{ t }}</option> }
+                </select>
+              </div>
+              <div class="field check-field">
+                <label>¿Tiene algas?</label>
+                <label class="check">
+                  <input type="checkbox" formControlName="tieneAlgas">
+                  <span>Presencia de algas</span>
+                </label>
+              </div>
+            </div>
+
+            <button class="btn-submit" type="submit" [disabled]="guardando">
+              {{ guardando ? 'Registrando…' : 'Registrar Datos' }}
+            </button>
+          </form>
+        </div>
+
+        <!-- Filtros + tarjetas de parámetros -->
+        <div class="bento-right">
+
+          <div class="filters">
+            <div class="filters-lbl">
+              <i class="ti ti-filter" aria-hidden="true"></i>
+              <span>Filtros:</span>
+            </div>
+            <select class="pill" disabled>
+              <option>Todas las Piscinas</option>
+            </select>
+            <select class="pill" disabled>
+              <option>Todos los Tipos</option>
+            </select>
+            <input class="pill" type="date" disabled>
+            <select class="pill" disabled>
+              <option>Cualquier Estado</option>
+            </select>
+          </div>
+
+          <div class="param-grid">
+
+            <div class="param-card">
+              <div class="pcard-top">
+                <h4>Nivel de pH</h4>
+                <span class="tag" [class.ok]="estadoPh(ultimoDetalle?.nivelPh).cls === 'ok'"
+                      [class.bad]="estadoPh(ultimoDetalle?.nivelPh).cls === 'bad'">
+                  <i class="ti" [class.ti-circle-check]="estadoPh(ultimoDetalle?.nivelPh).cls === 'ok'"
+                     [class.ti-alert-triangle]="estadoPh(ultimoDetalle?.nivelPh).cls === 'bad'" aria-hidden="true"></i>
+                  {{ estadoPh(ultimoDetalle?.nivelPh).label }}
+                </span>
+              </div>
+              <div class="pcard-val">{{ ultimoDetalle?.nivelPh ?? '—' }}</div>
+              <div class="spark ph">
+                <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <path d="M0,20 Q10,10 20,15 T40,25 T60,10 T80,20 T100,5" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="param-card">
+              <div class="pcard-top">
+                <h4>Cloro Libre</h4>
+                <span class="tag" [class.ok]="estadoCloro(ultimoDetalle?.nivelCloro).cls === 'ok'"
+                      [class.bad]="estadoCloro(ultimoDetalle?.nivelCloro).cls === 'bad'">
+                  <i class="ti" [class.ti-circle-check]="estadoCloro(ultimoDetalle?.nivelCloro).cls === 'ok'"
+                     [class.ti-alert-triangle]="estadoCloro(ultimoDetalle?.nivelCloro).cls === 'bad'" aria-hidden="true"></i>
+                  {{ estadoCloro(ultimoDetalle?.nivelCloro).label }}
+                </span>
+              </div>
+              <div class="pcard-val">{{ ultimoDetalle?.nivelCloro ?? '—' }} <span class="unit">ppm</span></div>
+              <div class="spark cl">
+                <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <path d="M0,10 Q10,20 20,15 T40,5 T60,20 T80,25 T100,28" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="param-card">
+              <div class="pcard-top">
+                <h4>Temperatura</h4>
+                <span class="tag" [class.ok]="estadoTemp(ultimoDetalle?.temperatura).cls === 'ok'"
+                      [class.bad]="estadoTemp(ultimoDetalle?.temperatura).cls === 'bad'">
+                  <i class="ti" [class.ti-circle-check]="estadoTemp(ultimoDetalle?.temperatura).cls === 'ok'"
+                     [class.ti-alert-triangle]="estadoTemp(ultimoDetalle?.temperatura).cls === 'bad'" aria-hidden="true"></i>
+                  {{ estadoTemp(ultimoDetalle?.temperatura).label }}
+                </span>
+              </div>
+              <div class="pcard-val">{{ ultimoDetalle?.temperatura ?? '—' }} <span class="unit">°C</span></div>
+              <div class="spark temp">
+                <svg viewBox="0 0 100 30" preserveAspectRatio="none">
+                  <path d="M0,15 Q10,12 20,14 T40,16 T60,15 T80,13 T100,15" />
+                </svg>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Historial de Mediciones -->
+      <div class="history">
+        <div class="hist-head">
+          <h3>Historial de Mediciones</h3>
+          <div class="pager">
+            <button class="pg-btn" (click)="paginaAnterior()" [disabled]="paginaActual === 0" aria-label="Anteriores">
+              <i class="ti ti-chevron-left" aria-hidden="true"></i>
+            </button>
+            <span class="pg-lbl">{{ totalPaginas ? paginaActual + 1 : 0 }} / {{ totalPaginas }}</span>
+            <button class="pg-btn" (click)="paginaSiguiente()"
+                    [disabled]="paginaActual >= totalPaginas - 1" aria-label="Siguientes">
+              <i class="ti ti-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha y Hora</th>
+                <th>Piscina</th>
+                <th>Tipo</th>
+                <th class="num">pH</th>
+                <th class="num">Cloro (ppm)</th>
+                <th class="num">Temp (°C)</th>
+                <th class="center">Estado General</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of medicionesPagina; track m.medicionId) {
+                <tr>
+                  <td class="nowrap">{{ m.fechaMedicion | date:'dd/MM/yyyy, HH:mm' }}</td>
+                  <td>{{ piscinaHistorial?.nombre }}</td>
+                  @if (m.detalle; as d) {
+                    <td>
+                      <span class="tipo">
+                        <i class="ti" [class.ti-user]="d.tipoMedicion === 'Manual'"
+                           [class.ti-access-point]="d.tipoMedicion !== 'Manual'" aria-hidden="true"></i>
+                        {{ d.tipoMedicion }}
+                      </span>
+                    </td>
+                    <td class="num">{{ d.nivelPh }}</td>
+                    <td class="num" [class.danger]="estadoGeneral(d)?.cloroAlerta">{{ d.nivelCloro }}</td>
+                    <td class="num">{{ d.temperatura }}</td>
+                    <td class="center">
+                      <span class="estado" [class.bad]="estadoGeneral(d)?.alerta" [class.ok]="!estadoGeneral(d)?.alerta">
+                        <i class="ti" [class.ti-alert-triangle]="estadoGeneral(d)?.alerta"
+                           [class.ti-circle-check]="!estadoGeneral(d)?.alerta" aria-hidden="true"></i>
+                        {{ estadoGeneral(d)?.label }}
+                      </span>
+                    </td>
+                  } @else {
+                    <td colspan="5" class="loading">
+                      <i class="ti ti-loader-2 spin" aria-hidden="true"></i> Cargando detalle…
+                    </td>
+                  }
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="7" class="empty">
+                    @if (cargandoHistorial) { Cargando mediciones… }
+                    @else { No hay mediciones registradas para esta piscina. }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+    <div class="foot">© 2024 Smart Pool Guardian — Todos los derechos reservados</div>
+  </div>
+</div>

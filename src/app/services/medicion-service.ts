@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 
 import { environment } from '../../environments/environment.development';
 import { MedicionDetalleDTO } from '../models/dtos/MedicionDetalleDTO';
+import { MedicionDTO } from '../models/dtos/MedicionDTO';
 
 const base_url = environment.base;
 
@@ -13,6 +14,10 @@ export class MedicionService {
   private url = `${base_url}/api/mediciones`;
 
   constructor(private http:HttpClient){}
+
+  registrar(medicion: MedicionDTO) {
+    return this.http.post(`${this.url}/registrar`, medicion);
+  }
 
   obtenerAlertas(idUsuario:number){
     return this.http.get(
