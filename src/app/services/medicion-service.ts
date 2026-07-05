@@ -16,7 +16,7 @@ export class MedicionService {
   constructor(private http:HttpClient){}
 
   registrar(medicion: MedicionDTO) {
-    return this.http.post(`${this.url}/registrar`, medicion);
+    return this.http.post<MedicionDTO>(`${this.url}/registrar`, medicion);
   }
 
   obtenerAlertas(idUsuario:number){

@@ -277,56 +277,77 @@ export class MedicionComponent implements OnInit {
 
     this.guardando = true;
 
-    // 1) Registrar la medición (responde 201 sin cuerpo).
+    // 1) Registrar la medición: el back responde con la medición creada (incluye su id).
     this.mS.registrar(medicion).subscribe({
-      next: () => {
-        // 2) Recuperar la medición recién creada (la más reciente de la piscina).
-        this.mS.listarPorPiscina(idPiscina).subscribe({
-          next: (lista) => {
-            const ultima = this.ordenarRecientes(lista)[0];
-            const idMedicion = ultima?.medicionId ?? ultima?.id;
+      next: (creada) => {
+        const idMedicion = creada?.medicionId ?? (creada as any)?.id;
 
-            if (idMedicion == null) {
-              console.error('No se pudo obtener el id de la medición registrada');
-              this.guardando = false;
-              return;
-            }
+        if (idMedicion != null) {
+          
+          console.log(creada)
 
-            // 3) Registrar su detalle apuntando a esa medición.
-            const detalle: MedicionDetalleDTO = {
-              nivelCloro: this.form.value.nivelCloro,
-              nivelPh: this.form.value.nivelPh,
-              temperatura: this.form.value.temperatura,
-              nivelTurbidez: this.form.value.nivelTurbidez,
-              alcalinidad: this.form.value.alcalinidad,
-              durezaCalcio: this.form.value.durezaCalcio,
-              tieneAlgas: this.form.value.tieneAlgas,
-              colorPiscina: this.form.value.colorPiscina,
-              olor: this.form.value.olor,
-              tipoMedicion: this.form.value.tipoMedicion,
-              medicionId: idMedicion,
-            };
+          this.registrarDetalle(idPiscina, idMedicion);
 
-            this.dmS.registrar(detalle).subscribe({
-              next: () => {
-                this.guardando = false;
-                this.resetForm(idPiscina);
-                this.cargarHistorial(idPiscina);
-              },
-              error: (err) => {
-                console.error('Error al registrar el detalle', err);
-                this.guardando = false;
-              },
-            });
-          },
-          error: (err) => {
-            console.error('Error al recuperar la medición registrada', err);
-            this.guardando = false;
-          },
-        });
+        } else {
+
+          this.recuperarUltimaYRegistrarDetalle(idPiscina);
+
+        }
       },
       error: (err) => {
         console.error('Error al registrar la medición', err);
+        this.guardando = false;
+      },
+    });
+  }
+
+  // Registra el detalle de la medición recién creada y refresca el historial.
+  private registrarDetalle(idPiscina: number, idMedicion: number): void {
+    const detalle: MedicionDetalleDTO = {
+      nivelCloro: this.form.value.nivelCloro,
+      nivelPh: this.form.value.nivelPh,
+      temperatura: this.form.value.temperatura,
+      nivelTurbidez: this.form.value.nivelTurbidez,
+      alcalinidad: this.form.value.alcalinidad,
+      durezaCalcio: this.form.value.durezaCalcio,
+      tieneAlgas: this.form.value.tieneAlgas,
+      colorPiscina: this.form.value.colorPiscina,
+      olor: this.form.value.olor,
+      tipoMedicion: this.form.value.tipoMedicion,
+      medicionId: idMedicion,
+    };
+
+    this.dmS.registrar(detalle).subscribe({
+      next: () => {
+        this.guardando = false;
+        this.resetForm(idPiscina);
+        this.cargarHistorial(idPiscina);
+      },
+      error: (err) => {
+        console.error('Error al registrar el detalle', err);
+        this.guardando = false;
+      },
+    });
+  }
+
+  // Respaldo por si el registro no devolviera el id: toma la medición más reciente.
+  private recuperarUltimaYRegistrarDetalle(idPiscina: number): void {
+    this.mS.listarPorPiscina(idPiscina).subscribe({
+      next: (lista) => {
+        const ultima = this.ordenarRecientes(lista)[0];
+        const idMedicion = ultima?.medicionId ?? ultima?.medicionId;
+
+        console.log(ultima)
+
+        if (idMedicion == null) {
+          console.error('No se pudo obtener el id de la medición registrada');
+          this.guardando = false;
+          return;
+        }
+        this.registrarDetalle(idPiscina, idMedicion);
+      },
+      error: (err) => {
+        console.error('Error al recuperar la medición registrada', err);
         this.guardando = false;
       },
     });
