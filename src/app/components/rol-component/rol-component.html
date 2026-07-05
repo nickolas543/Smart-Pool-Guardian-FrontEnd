@@ -1,0 +1,128 @@
+<div class="app">
+
+    <app-sidebar-component></app-sidebar-component>
+
+    <div class="main">
+
+        <app-navbar-component></app-navbar-component>
+
+        <main class="canvas">
+
+            <div class="roles-page">
+
+                <!-- Page Header -->
+                <div class="roles-page__header">
+                    <div>
+                        <h2 class="roles-page__title">Gestión de Roles</h2>
+                        <p class="roles-page__subtitle">Administra los niveles de acceso y permisos del sistema.</p>
+                    </div>
+                    <button class="btn btn--primary" type="button" (click)="onCreateRole()">
+                        <span class="material-symbols-outlined">add</span>
+                        Registrar rol
+                    </button>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="roles-grid">
+
+                    <!-- Roles Overview -->
+                    <section class="card roles-grid__table">
+                        <div class="card__header">
+                            <h3 class="card__title">Roles Activos</h3>
+                            <span class="badge badge--neutral">{{ roles.length }} Roles Configurados</span>
+                        </div>
+
+                        <div class="card__body card__body--table">
+                            <table class="roles-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre del Rol</th>
+                                        <th>Descripción</th>
+                                        <th>Usuarios</th>
+                                        <th class="text-right">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (role of roles; track role.id) {
+                                    <tr class="roles-table__row"
+                                        [class.roles-table__row--active]="role.id === selectedRoleId"
+                                        (click)="selectRole(role)">
+                                        <td class="roles-table__name">{{ role.name }}</td>
+                                        <td class="roles-table__desc">{{ role.description }}</td>
+                                        <td>
+                                            @if (role.users?.length) {
+                                            <div class="avatar-stack">
+                                                @for (user of role.users.slice(0, 2); track user) {
+                                                <span class="avatar"
+                                                    [style.background]="user.color">
+                                                    {{ user.initials }}
+                                                </span>
+                                                }
+
+                                                @if (role.users.length > 2) {
+                                                <span class="avatar avatar--count">
+                                                    {{ role.users.length - 2 }}+
+                                                </span>
+                                                }
+                                            </div>
+                                            } @else {
+                                            <span class="text-muted text-xs italic">Sin asignar</span>
+                                            }
+                                        </td>
+                                        <td class="text-right">
+                                            <button class="icon-btn" type="button"
+                                                (click)="onEditRole(role, $event)"
+                                                aria-label="Editar rol">
+                                                <span class="material-symbols-outlined">edit</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Assignment & Details Side Panel -->
+                    <aside class="roles-grid__side">
+
+                        <!-- Quick Assign Card -->
+
+                        <!-- Role Details / Permissions Preview -->
+                        <section class="card card--recessed">
+                            <h4 class="card__subtitle">Matriz de Permisos (Vista Previa)</h4>
+
+                            @if (selectedRole) {
+                            <div class="permissions-list">
+                                @for (perm of selectedRole.permissions; track perm) {
+                                <div class="permission-row">
+                                    <span class="permission-row__label">{{ perm.label }}</span>
+                                </div>
+                                }
+                            </div>
+                            } @else {
+                            <div class="permissions-list">
+                                @for (perm of defaultPermissions; track perm) {
+                                <div class="permission-row">
+                                    <span class="permission-row__label">{{ perm.label }}</span>
+                                    <span
+                                        class="material-symbols-outlined permission-row__icon--denied">
+                                        cancel
+                                    </span>
+                                </div>
+                                }
+                            </div>
+                            }
+
+                            <p class="permissions-hint">
+                                Selecciona un rol en la tabla para ver sus permisos detallados.
+                            </p>
+                        </section>
+
+                    </aside>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
