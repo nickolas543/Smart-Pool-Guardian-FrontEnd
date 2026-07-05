@@ -1,8 +1,10 @@
 import {
   Component,
+  computed,
   inject,
   OnInit,
   PLATFORM_ID,
+  signal,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
@@ -50,7 +52,7 @@ export class MedicionComponent implements OnInit {
   idUsuario = 0;
 
   // Piscinas del usuario (para el dropdown).
-  piscinas: PiscinasPorUsuarioDTO[] = [];
+  piscinas = signal<PiscinasPorUsuarioDTO[]>([]);
 
   // Opciones de selects.
   colores = ['Cristalina', 'Verdosa', 'Turbia', 'Lechosa'];
@@ -58,16 +60,35 @@ export class MedicionComponent implements OnInit {
   tipos = ['Manual', 'IoT Sensor'];
 
   // Historial de la piscina seleccionada.
-  piscinaHistorial: PiscinaHistorial | null = null;
-  cargandoHistorial = false;
+  piscinaHistorial = signal<PiscinaHistorial | null>(null);
+  cargandoHistorial = signal(false);
 
   // Paginador: 5 mediciones por página.
-  paginaActual = 0;
+  paginaActual = signal(0);
   readonly tamPagina = 5;
+
+  // Derivados reactivos del historial + página.
+  medicionesPagina = computed<MedicionItem[]>(() => {
+    const hist = this.piscinaHistorial();
+    if (!hist) return [];
+    const inicio = this.paginaActual() * this.tamPagina;
+    return hist.mediciones.slice(inicio, inicio + this.tamPagina);
+  });
+
+  totalPaginas = computed(() => {
+    const hist = this.piscinaHistorial();
+    if (!hist) return 0;
+    return Math.ceil(hist.mediciones.length / this.tamPagina);
+  });
+
+  // Tarjetas de resumen: detalle de la última medición registrada.
+  ultimoDetalle = computed<MedicionDetalleDTO | undefined>(
+    () => this.piscinaHistorial()?.mediciones[0]?.detalle
+  );
 
   form: FormGroup;
   enviado = false;
-  guardando = false;
+  guardando = signal(false);
 
   private platformId = inject(PLATFORM_ID);
 
@@ -128,7 +149,7 @@ export class MedicionComponent implements OnInit {
   cargarPiscinas(): void {
     this.pS.listPiscinas(this.idUsuario).subscribe({
       next: (data) => {
-        this.piscinas = data;
+        this.piscinas.set(data);
         if (data.length) {
           // Dispara valueChanges -> cargarHistorial.
           this.form.patchValue({ idPiscina: data[0].piscinaId });
@@ -140,8 +161,8 @@ export class MedicionComponent implements OnInit {
 
   // ===== Historial =====
   cargarHistorial(idPiscina: number): void {
-    const piscina = this.piscinas.find((p) => p.piscinaId === idPiscina);
-    this.cargandoHistorial = true;
+    const piscina = this.piscinas().find((p) => p.piscinaId === idPiscina);
+    this.cargandoHistorial.set(true);
 
     this.mS.listarPorPiscina(idPiscina).subscribe({
       next: (lista) => {
@@ -152,18 +173,18 @@ export class MedicionComponent implements OnInit {
           })
         );
 
-        this.piscinaHistorial = {
+        this.piscinaHistorial.set({
           idPiscina,
           nombre: piscina?.nombrePiscina ?? '',
           mediciones,
-        };
-        this.paginaActual = 0;
-        this.cargandoHistorial = false;
+        });
+        this.paginaActual.set(0);
+        this.cargandoHistorial.set(false);
         this.cargarDetallesPagina();
       },
       error: (err) => {
         console.error('Error al listar mediciones', err);
-        this.cargandoHistorial = false;
+        this.cargandoHistorial.set(false);
       },
     });
   }
@@ -180,53 +201,48 @@ export class MedicionComponent implements OnInit {
 
   // Solo pide el detalle de las 5 mediciones visibles y cachea el resultado.
   private cargarDetallesPagina(): void {
-    for (const m of this.medicionesPagina) {
+    for (const m of this.medicionesPagina()) {
       if (m.detalle || m.cargandoDetalle) continue;
       m.cargandoDetalle = true;
       this.dmS.buscarPorMedicion(m.medicionId).subscribe({
         next: (detalle) => {
           m.detalle = detalle;
           m.cargandoDetalle = false;
+          this.refrescarHistorial();
         },
         error: (err) => {
           console.error('Error al buscar detalle', err);
           m.cargandoDetalle = false;
+          this.refrescarHistorial();
         },
       });
     }
   }
 
+  // El detalle se muta dentro del item; emitimos una nueva referencia para que
+  // los computed (medicionesPagina/ultimoDetalle) y la vista se recalculen.
+  private refrescarHistorial(): void {
+    this.piscinaHistorial.update((h) =>
+      h ? { ...h, mediciones: [...h.mediciones] } : h
+    );
+  }
+
   // ===== Paginación =====
-  get medicionesPagina(): MedicionItem[] {
-    if (!this.piscinaHistorial) return [];
-    const inicio = this.paginaActual * this.tamPagina;
-    return this.piscinaHistorial.mediciones.slice(inicio, inicio + this.tamPagina);
-  }
-
-  get totalPaginas(): number {
-    if (!this.piscinaHistorial) return 0;
-    return Math.ceil(this.piscinaHistorial.mediciones.length / this.tamPagina);
-  }
-
   paginaSiguiente(): void {
-    if (this.paginaActual < this.totalPaginas - 1) {
-      this.paginaActual++;
+    if (this.paginaActual() < this.totalPaginas() - 1) {
+      this.paginaActual.update((p) => p + 1);
       this.cargarDetallesPagina();
     }
   }
 
   paginaAnterior(): void {
-    if (this.paginaActual > 0) {
-      this.paginaActual--;
+    if (this.paginaActual() > 0) {
+      this.paginaActual.update((p) => p - 1);
       this.cargarDetallesPagina();
     }
   }
 
-  // ===== Tarjetas de resumen (última medición) =====
-  get ultimoDetalle(): MedicionDetalleDTO | undefined {
-    return this.piscinaHistorial?.mediciones[0]?.detalle;
-  }
-
+  // ===== Estados (tarjetas / tabla) =====
   estadoPh(v?: number): { label: string; cls: string } {
     if (v == null) return { label: '—', cls: 'ok' };
     return v >= 7.2 && v <= 7.8
@@ -275,7 +291,7 @@ export class MedicionComponent implements OnInit {
       idPiscina,
     };
 
-    this.guardando = true;
+    this.guardando.set(true);
 
     // 1) Registrar la medición: el back responde con la medición creada (incluye su id).
     this.mS.registrar(medicion).subscribe({
@@ -283,20 +299,16 @@ export class MedicionComponent implements OnInit {
         const idMedicion = creada?.medicionId ?? (creada as any)?.id;
 
         if (idMedicion != null) {
-          
-          console.log(creada)
-
+          // 2) Registrar su detalle apuntando a esa medición.
           this.registrarDetalle(idPiscina, idMedicion);
-
         } else {
-
+          // Respaldo: si algún día no viniera el id, recuperar la última medición.
           this.recuperarUltimaYRegistrarDetalle(idPiscina);
-
         }
       },
       error: (err) => {
         console.error('Error al registrar la medición', err);
-        this.guardando = false;
+        this.guardando.set(false);
       },
     });
   }
@@ -319,13 +331,13 @@ export class MedicionComponent implements OnInit {
 
     this.dmS.registrar(detalle).subscribe({
       next: () => {
-        this.guardando = false;
+        this.guardando.set(false);
         this.resetForm(idPiscina);
         this.cargarHistorial(idPiscina);
       },
       error: (err) => {
         console.error('Error al registrar el detalle', err);
-        this.guardando = false;
+        this.guardando.set(false);
       },
     });
   }
@@ -335,20 +347,18 @@ export class MedicionComponent implements OnInit {
     this.mS.listarPorPiscina(idPiscina).subscribe({
       next: (lista) => {
         const ultima = this.ordenarRecientes(lista)[0];
-        const idMedicion = ultima?.medicionId ?? ultima?.medicionId;
-
-        console.log(ultima)
+        const idMedicion = ultima?.medicionId ?? ultima?.id;
 
         if (idMedicion == null) {
           console.error('No se pudo obtener el id de la medición registrada');
-          this.guardando = false;
+          this.guardando.set(false);
           return;
         }
         this.registrarDetalle(idPiscina, idMedicion);
       },
       error: (err) => {
         console.error('Error al recuperar la medición registrada', err);
-        this.guardando = false;
+        this.guardando.set(false);
       },
     });
   }
