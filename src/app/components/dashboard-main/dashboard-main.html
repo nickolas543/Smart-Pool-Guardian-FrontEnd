@@ -40,14 +40,18 @@
           <div class="sc-num">{{ totalPiscinas() }}</div>
           <div class="sc-lbl">Piscinas activas</div>
         </div>
-        <div class="sc">
-          <div class="sc-top">
-            <div class="si r"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
-            <span class="sbadge r">Crítico</span>
+
+        @if (isAdminOrDev()) {
+          <div class="sc">
+            <div class="sc-top">
+              <div class="si r"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+              <span class="sbadge r">Crítico</span>
+            </div>
+            <div class="sc-num">—</div>
+            <div class="sc-lbl">Piscinas en riesgo</div>
           </div>
-          <div class="sc-num">—</div>
-          <div class="sc-lbl">Piscinas en riesgo</div>
-        </div>
+        }
+
         <div class="sc">
           <div class="sc-top">
             <div class="si g"><i class="ti ti-droplet" aria-hidden="true"></i></div>
@@ -62,20 +66,23 @@
           <div class="sc-num">{{ totalNotifs() }}</div>
           <div class="sc-lbl">Notifs. pendientes</div>
         </div>
-        <div class="sc">
-          <div class="sc-top">
-            <div class="si p"><i class="ti ti-brain" aria-hidden="true"></i></div>
+
+        @if (isAdminOrDev()) {
+          <div class="sc">
+            <div class="sc-top">
+              <div class="si p"><i class="ti ti-brain" aria-hidden="true"></i></div>
+            </div>
+            <div class="sc-num">{{ recomendacionesCriticas().length }}</div>
+            <div class="sc-lbl">Evals. IA críticas</div>
           </div>
-          <div class="sc-num">{{ recomendacionesCriticas().length }}</div>
-          <div class="sc-lbl">Evals. IA críticas</div>
-        </div>
-        <div class="sc">
-          <div class="sc-top">
-            <div class="si gr"><i class="ti ti-user-off" aria-hidden="true"></i></div>
+          <div class="sc">
+            <div class="sc-top">
+              <div class="si gr"><i class="ti ti-user-off" aria-hidden="true"></i></div>
+            </div>
+            <div class="sc-num">{{ usuariosInactivos() }}</div>
+            <div class="sc-lbl">Usuarios inactivos</div>
           </div>
-          <div class="sc-num">{{ usuariosInactivos() }}</div>
-          <div class="sc-lbl">Usuarios inactivos</div>
-        </div>
+        }
       </div>
 
       <div class="grid2">

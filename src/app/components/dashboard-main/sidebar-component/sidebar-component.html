@@ -1,25 +1,50 @@
 <nav class="side">
-    <div class="side-top">
-        <div class="logo-box"><i class="ti ti-droplet" aria-hidden="true"></i></div>
-        <div>
-            <div class="logo-name">Smart Pool Guardian</div>
-            <div class="logo-sub">Tech-Luxe Monitor</div>
-        </div>
+  <div class="side-top">
+    <div class="logo-box"><i class="ti ti-droplet" aria-hidden="true"></i></div>
+    <div>
+      <div class="logo-name">Smart Pool Guardian</div>
+      <div class="logo-sub">Tech-Luxe Monitor</div>
     </div>
-    <div class="nav">
-        <div class="nav-sec">Principal</div>
-        <a class="nav-a" routerLink="/dashboard" routerLinkActive="on"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</a>
-        <a class="nav-a" routerLink="/usuarios" routerLinkActive="on"><i class="ti ti-users" aria-hidden="true"></i> Usuarios</a>
-        <div class="nav-a"><i class="ti ti-shield-check" aria-hidden="true"></i> Roles</div>
-        <a class="nav-a" routerLink="/piscinas" routerLinkActive="on"><i class="ti ti-ripple"></i> Piscinas</a>
-        <div class="nav-sec">Análisis</div>
-        <a class="nav-a" routerLink="/mediciones" routerLinkActive="on"><i class="ti ti-droplet" aria-hidden="true"></i> Mediciones</a>
-        <div class="nav-a"><i class="ti ti-brain" aria-hidden="true"></i> Evaluaciones IA</div>
-        <div class="nav-a"><i class="ti ti-sparkles" aria-hidden="true"></i> Recomendaciones IA</div>
-        <a class="nav-a" routerLink="/notificaciones" routerLinkActive="on"><i class="ti ti-bell" aria-hidden="true"></i> Notificaciones</a>
-        <div class="nav-a"><i class="ti ti-chart-bar" aria-hidden="true"></i> Reportes</div>
-    </div>
-    <div class="side-foot">
-        <div class="nav-a"><i class="ti ti-settings" aria-hidden="true"></i> Configuración</div>
-    </div>
+  </div>
+  <div class="nav">
+    <div class="nav-sec">Principal</div>
+    <a class="nav-a" routerLink="/dashboard" routerLinkActive="on">
+      <i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard
+    </a>
+
+    @if (isAdminOrDev()) {
+      <a class="nav-a" routerLink="/usuarios" routerLinkActive="on">
+        <i class="ti ti-users" aria-hidden="true"></i> Usuarios
+      </a>
+    }
+
+    @if (isDev()) {
+      <div class="nav-a">
+        <i class="ti ti-shield-check" aria-hidden="true"></i> Roles
+      </div>
+    }
+
+    <a class="nav-a" routerLink="/piscinas" routerLinkActive="on">
+      <i class="ti ti-ripple"></i> Piscinas
+    </a>
+
+    <div class="nav-sec">Análisis</div>
+    <a class="nav-a" routerLink="/mediciones" routerLinkActive="on">
+      <i class="ti ti-droplet" aria-hidden="true"></i> Mediciones
+    </a>
+    <div class="nav-a"><i class="ti ti-brain" aria-hidden="true"></i> Evaluaciones IA</div>
+    <div class="nav-a"><i class="ti ti-sparkles" aria-hidden="true"></i> Recomendaciones IA</div>
+    <a class="nav-a" routerLink="/notificaciones" routerLinkActive="on">
+      <i class="ti ti-bell" aria-hidden="true"></i> Notificaciones
+    </a>
+
+    @if (isAdminOrDev()) {
+      <div class="nav-a">
+        <i class="ti ti-chart-bar" aria-hidden="true"></i> Reportes
+      </div>
+    }
+  </div>
+  <div class="side-foot">
+    <div class="nav-a"><i class="ti ti-settings" aria-hidden="true"></i> Configuración</div>
+  </div>
 </nav>

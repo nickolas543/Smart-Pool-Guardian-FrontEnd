@@ -21,9 +21,9 @@ import { UsuarioService } from '../../services/usuario-service';
   styleUrl: './dashboard-main.css',
 })
 export class DashboradMain implements OnInit {
-
   id: number = 0;
   usuariosInactivos = signal<number>(0);
+  role: string = '';
 
   // Cards
   piscinas = signal<PiscinasPorUsuarioDTO[]>([]);
@@ -60,41 +60,48 @@ export class DashboradMain implements OnInit {
     const decodedToken = helper.decodeToken(token);
     this.id = Number(decodedToken.id);
 
+    if (!token) return;
+    const decoded = helper.decodeToken(token);
+    this.role = decoded.roles ?? '';
+
     this.cargarPiscinas();
     this.cargarNotificaciones();
-    this.cargarAlertas();
-    this.cargarRecomendaciones();
-    this.cargarInactivos();
+
+    if (this.isAdminOrDev()) {
+      this.cargarInactivos();
+      this.cargarRecomendaciones();
+      this.cargarAlertas();
+    }
   }
 
   cargarPiscinas() {
-    this.pS.listPiscinas(this.id).subscribe(data => {
+    this.pS.listPiscinas(this.id).subscribe((data) => {
       this.piscinas.set(data);
       this.totalPiscinas.set(data.length);
     });
   }
 
   cargarNotificaciones() {
-    this.nS.listarNoLeidas(this.id).subscribe(data => {
+    this.nS.listarNoLeidas(this.id).subscribe((data) => {
       this.notificacionesNoLeidas.set(data);
       this.totalNotifs.set(data.length);
     });
   }
 
   cargarAlertas() {
-    this.mS.obtenerAlertas(this.id).subscribe(data => {
+    this.mS.obtenerAlertas(this.id).subscribe((data) => {
       this.alertaAlgas.set(data);
     });
   }
 
   cargarRecomendaciones() {
-    this.rS.porEvaluacionesCriticas().subscribe(data => {
+    this.rS.porEvaluacionesCriticas().subscribe((data) => {
       this.recomendacionesCriticas.set(data);
     });
   }
 
   cargarInactivos() {
-    this.usuarioS.obtenerInactivos().subscribe(data => {
+    this.usuarioS.obtenerInactivos().subscribe((data) => {
       this.usuariosInactivos.set(data.length);
     });
   }
@@ -104,7 +111,19 @@ export class DashboradMain implements OnInit {
     this.recomendacionPiscina.set('');
     this.rS.porPiscina(piscinaId).subscribe({
       next: (data) => this.recomendacionPiscina.set(data),
-      error: (err) => console.error(err)
+      error: (err) => console.error(err),
     });
+  }
+
+  isAdmin(): boolean {
+    return this.role.includes('ADMIN');
+  }
+
+  isDev(): boolean {
+    return this.role.includes('DEV');
+  }
+
+  isAdminOrDev(): boolean {
+    return this.isAdmin() || this.isDev();
   }
 }
