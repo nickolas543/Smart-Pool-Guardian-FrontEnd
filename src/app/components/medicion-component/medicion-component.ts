@@ -25,7 +25,6 @@ import { PiscinasPorUsuarioDTO } from '../../models/dtos/PiscinasPorUsuarioDTO';
 import { MedicionDTO } from '../../models/dtos/MedicionDTO';
 import { MedicionDetalleDTO } from '../../models/dtos/MedicionDetalleDTO';
 
-// Una medición del historial: cabecera + su detalle (cargado bajo demanda).
 interface MedicionItem {
   medicionId: number;
   fechaMedicion: string | Date;
@@ -33,7 +32,6 @@ interface MedicionItem {
   cargandoDetalle?: boolean;
 }
 
-// Estructura solicitada (punto 4): piscina + sus mediciones ordenadas (reciente primero).
 interface PiscinaHistorial {
   idPiscina: number;
   nombre: string;
@@ -51,23 +49,18 @@ export class MedicionComponent implements OnInit {
 
   idUsuario = 0;
 
-  // Piscinas del usuario (para el dropdown).
   piscinas = signal<PiscinasPorUsuarioDTO[]>([]);
 
-  // Opciones de selects.
   colores = ['Cristalina', 'Verdosa', 'Turbia', 'Lechosa'];
   olores = ['Ninguno', 'Cloro', 'Fétido', 'Moho'];
   tipos = ['Manual', 'IoT Sensor'];
 
-  // Historial de la piscina seleccionada.
   piscinaHistorial = signal<PiscinaHistorial | null>(null);
   cargandoHistorial = signal(false);
 
-  // Paginador: 5 mediciones por página.
   paginaActual = signal(0);
   readonly tamPagina = 5;
 
-  // Derivados reactivos del historial + página.
   medicionesPagina = computed<MedicionItem[]>(() => {
     const hist = this.piscinaHistorial();
     if (!hist) return [];
@@ -81,7 +74,6 @@ export class MedicionComponent implements OnInit {
     return Math.ceil(hist.mediciones.length / this.tamPagina);
   });
 
-  // Tarjetas de resumen: detalle de la última medición registrada.
   ultimoDetalle = computed<MedicionDetalleDTO | undefined>(
     () => this.piscinaHistorial()?.mediciones[0]?.detalle
   );
@@ -199,7 +191,6 @@ export class MedicionComponent implements OnInit {
     });
   }
 
-  // Solo pide el detalle de las 5 mediciones visibles y cachea el resultado.
   private cargarDetallesPagina(): void {
     for (const m of this.medicionesPagina()) {
       if (m.detalle || m.cargandoDetalle) continue;
@@ -219,8 +210,6 @@ export class MedicionComponent implements OnInit {
     }
   }
 
-  // El detalle se muta dentro del item; emitimos una nueva referencia para que
-  // los computed (medicionesPagina/ultimoDetalle) y la vista se recalculen.
   private refrescarHistorial(): void {
     this.piscinaHistorial.update((h) =>
       h ? { ...h, mediciones: [...h.mediciones] } : h
@@ -293,16 +282,15 @@ export class MedicionComponent implements OnInit {
 
     this.guardando.set(true);
 
-    // 1) Registrar la medición: el back responde con la medición creada (incluye su id).
     this.mS.registrar(medicion).subscribe({
       next: (creada) => {
         const idMedicion = creada?.medicionId ?? (creada as any)?.id;
 
         if (idMedicion != null) {
-          // 2) Registrar su detalle apuntando a esa medición.
+
           this.registrarDetalle(idPiscina, idMedicion);
         } else {
-          // Respaldo: si algún día no viniera el id, recuperar la última medición.
+
           this.recuperarUltimaYRegistrarDetalle(idPiscina);
         }
       },
@@ -313,7 +301,7 @@ export class MedicionComponent implements OnInit {
     });
   }
 
-  // Registra el detalle de la medición recién creada y refresca el historial.
+
   private registrarDetalle(idPiscina: number, idMedicion: number): void {
     const detalle: MedicionDetalleDTO = {
       nivelCloro: this.form.value.nivelCloro,

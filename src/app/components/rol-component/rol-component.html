@@ -1,0 +1,108 @@
+<div class="app">
+
+    <app-sidebar-component></app-sidebar-component>
+
+    <div class="main">
+
+        <app-navbar-component></app-navbar-component>
+
+        <main class="canvas">
+
+            <div class="roles-page">
+
+                <!-- Page Header -->
+                <div class="roles-page__header">
+                    <div>
+                        <h2 class="roles-page__title">Gestión de Roles</h2>
+                        <p class="roles-page__subtitle">
+                            Administra los niveles de acceso y permisos del sistema.
+                        </p>
+                    </div>
+
+                    <button class="btn btn--primary" type="button" (click)="onCreateRole()">
+                        <span class="material-symbols-outlined">add</span>
+                        Registrar rol
+                    </button>
+                </div>
+
+                <!-- Roles -->
+                <section class="card">
+                    <div class="card__header">
+                        <h3 class="card__title">Roles Activos</h3>
+                        <span class="badge badge--neutral">
+                            {{ roles().length }} Roles Configurados
+                        </span>
+                    </div>
+
+                    <div class="card__body card__body--table">
+                        <table class="roles-table">
+
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">N°</th>
+                                    <th>Nombre</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @for (role of roles(); track role; let i = $index) {
+
+                                <tr class="roles-table__row">
+
+                                    <td>{{ i + 1 }}</td>
+
+                                    <td class="roles-table__name">
+                                        {{ role.tipoRol }}
+                                    </td>
+
+                                </tr>
+
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+@if (modalCrearRol) {
+
+<div class="modal-backdrop">
+
+    <div class="modal">
+
+        <h3>Registrar Rol</h3>
+
+        <p>Ingrese el nombre del nuevo rol.</p>
+
+        <input
+            type="text"
+            [(ngModel)]="nuevoRol"
+            placeholder="Nombre del rol">
+
+        <div class="modal-actions">
+
+            <button
+                class="btn btn--outline"
+                (click)="cerrarModal()">
+                Cancelar
+            </button>
+
+            <button
+                class="btn btn--primary"
+                (click)="guardarRol()">
+                Guardar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

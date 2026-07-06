@@ -8,6 +8,7 @@ import { PiscinasComponent } from './components/piscina-component/piscina-compon
 import { NotificacionComponent } from './components/notificacion-component/notificacion-component';
 import { MedicionComponent } from './components/medicion-component/medicion-component';
 import { GestionUsuarios } from './components/gestion-usuarios/gestion-usuarios';
+import { RolComponent } from './components/rol-component/rol-component';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,10 @@ export const routes: Routes = [
   {
     path: 'notificaciones',
     component: NotificacionComponent,
+  },
+  {
+    path: 'roles',
+    component: RolComponent,
   },
   {
     path: 'mediciones',
