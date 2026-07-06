@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { UsuarioRequestDTO } from '../models/request/UsuarioRequestDTO';
 import { JwtRequestDTO } from '../models/request/JwtRequestDTO';
 import { Observable } from 'rxjs';
+import { UsuariosInactivosDTO } from '../models/dtos/UsuariosInactivosDTO';
 
 const base_url = environment.base;
 
@@ -26,6 +27,6 @@ export class UsuarioService {
   }
 
   obtenerInactivos() {
-    return this.http.get<any[]>(`${this.urlUsuarios}/reporte-usuarios-inactivos`);
+    return this.http.get<UsuariosInactivosDTO[]>(`${this.urlUsuarios}/reporte-usuarios-inactivos`);
   }
 }

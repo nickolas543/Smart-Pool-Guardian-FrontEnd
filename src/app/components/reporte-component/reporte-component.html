@@ -1,0 +1,71 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="./reporte-component.css">
+
+<div class="app">
+
+    <app-sidebar-component></app-sidebar-component>
+
+    <div class="main">
+
+        <app-navbar-component></app-navbar-component>
+
+        <main class="canvas">
+
+            <div class="phdr">
+                <div class="phdr-l">
+                    <h1>Reportes</h1>
+                    <p>Usuarios sin actividad reciente en sus mediciones.</p>
+                </div>
+            </div>
+
+            <div class="history">
+                <div class="hist-head">
+                    <h3>Usuarios Inactivos</h3>
+                    <div class="pager">
+                        <button class="pg-btn" (click)="paginaAnterior()" [disabled]="paginaActual() === 0"
+                            aria-label="Anteriores">
+                            <i class="ti ti-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <span class="pg-lbl">{{ totalPaginas() ? paginaActual() + 1 : 0 }} / {{ totalPaginas() }}</span>
+                        <button class="pg-btn" (click)="paginaSiguiente()"
+                            [disabled]="paginaActual() >= totalPaginas() - 1" aria-label="Siguientes">
+                            <i class="ti ti-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Email</th>
+                                <th>Celular</th>
+                                <th>Piscina</th>
+                                <th class="nowrap">Última Medición</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (u of usuariosPagina(); track u.email) {
+                            <tr>
+                                <td>{{ u.nombreUsuario }}</td>
+                                <td>{{ u.email }}</td>
+                                <td>{{ u.numeroCelular }}</td>
+                                <td>{{ u.nombrePiscina }}</td>
+                                <td class="nowrap">{{ u.fechaUltimaMedicion | date:'dd/MM/yyyy, HH:mm' }}</td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="5" class="empty">
+                                    @if (cargandoHistorial()) { Cargando usuarios… }
+                                    @else { No hay usuarios inactivos. }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="foot">© 2024 Smart Pool Guardian — Todos los derechos reservados</div>
+        </main>
+    </div>
+</div>
