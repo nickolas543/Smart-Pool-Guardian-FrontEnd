@@ -158,10 +158,10 @@
   align-items: center;
   gap: 9px;
   padding: 9px 18px;
-  background: #fff;
-  border: 1px solid #f3cccc;
+  background: #cee1e7;
+  border: 1px solid #445197;
   border-radius: 12px;
-  color: #c0392b;
+  color: #3a3df0;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .03em;
@@ -176,7 +176,7 @@
 }
 
 .f-alert:hover {
-  background: #fef6f6
+  background: #d9daf1
 }
 
 /* ===== Grid de tarjetas ===== */

@@ -11,12 +11,11 @@ import { NotificacionResponseDTO } from '../../models/response/NotificacionRespo
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { DatePipe } from '@angular/common';
 import { UsuarioService } from '../../services/usuario-service';
 
 @Component({
   selector: 'app-dashboard-main',
-  imports: [SidebarComponent, NavbarComponent, CommonModule, DatePipe, RouterLink, RouterLinkActive],
+  imports: [SidebarComponent, NavbarComponent, CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './dashboard-main.html',
   styleUrl: './dashboard-main.css',
 })

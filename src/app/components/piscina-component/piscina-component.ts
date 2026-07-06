@@ -83,40 +83,7 @@ export class PiscinasComponent implements OnInit {
         this.actualizarResumen();
 
         // Luego intentamos cargar mediciones por cada piscina
-        piscinas.forEach((p) => {
-          this.medicionService.listarPorPiscina(p.piscinaId).subscribe({
-            next: (mediciones: any[]) => {
-              if (!mediciones || mediciones.length === 0) return;
-
-              const ultima = mediciones[mediciones.length - 1];
-              if (!ultima?.medicionId) return;
-
-              this.medicionService.obtenerDetalle(ultima.medicionId).subscribe({
-                next: (detalle) => {
-                  const lista = [...this.piscinas()];
-                  const idx = lista.findIndex((v) => v.piscinaId === p.piscinaId);
-                  if (idx === -1) return;
-
-                  lista[idx] = {
-                    ...lista[idx],
-                    ph: detalle.nivelPh,
-                    cloro: detalle.nivelCloro,
-                    temp: detalle.temperatura,
-                    estado: this.calcularEstado(detalle.nivelPh, detalle.temperatura),
-                    badge: this.calcularBadge(detalle.nivelPh, detalle.temperatura),
-                    phWarn: detalle.nivelPh < 7.2 || detalle.nivelPh > 7.8,
-                    tiempo: this.calcularTiempo(ultima.fechaMedicion),
-                  };
-
-                  this.piscinas.set(lista);
-                  this.actualizarResumen();
-                },
-                error: () => {},
-              });
-            },
-            error: () => {},
-          });
-        });
+        
       },
       error: (err) => console.error(err),
     });
