@@ -55,6 +55,116 @@
   margin-top: 5px
 }
 
+/* ===== Pestañas de reportes ===== */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tab {
+  padding: 9px 16px;
+  border: 1px solid #e4eaf2;
+  border-radius: 10px;
+  background: #fff;
+  color: #4a6580;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s;
+}
+
+.tab:hover {
+  background: #f0f4f9;
+  border-color: #9ab5cc;
+}
+
+.tab.active {
+  background: #1a2e47;
+  border-color: #1a2e47;
+  color: #fff;
+}
+
+/* ===== Filtros ===== */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 16px 22px;
+  border-bottom: 1px solid #f0f4f9;
+  background: #fafcfe;
+}
+
+.fld {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.fld label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #8aa3bd;
+}
+
+.fld input,
+.fld select {
+  padding: 8px 11px;
+  border: 1px solid #e4eaf2;
+  border-radius: 8px;
+  background: #fff;
+  color: #1a2e47;
+  font-size: 13px;
+  min-width: 180px;
+  outline: none;
+  transition: border-color .12s;
+}
+
+.fld input:focus,
+.fld select:focus {
+  border-color: #9ab5cc;
+}
+
+.fld select:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.btn-consultar {
+  padding: 9px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #1a2e47;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .12s;
+}
+
+.btn-consultar:hover:not(:disabled) {
+  opacity: .88;
+}
+
+.btn-consultar:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+/* Aviso de la predicción de algas */
+.aviso {
+  margin: 14px 22px 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #eaf6ee;
+  border: 1px solid #cfe9d8;
+  color: #2f6b45;
+  font-size: 13px;
+}
+
 /* ===== Historial ===== */
 .history {
   background: #fff;

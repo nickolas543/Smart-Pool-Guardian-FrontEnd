@@ -14,13 +14,23 @@
             <div class="phdr">
                 <div class="phdr-l">
                     <h1>Reportes</h1>
-                    <p>Usuarios sin actividad reciente en sus mediciones.</p>
+                    <p>{{ reporteInfo().desc }}</p>
                 </div>
+            </div>
+
+            <!-- ===== Pestañas de reportes ===== -->
+            <div class="tabs">
+                @for (r of reportes; track r.id) {
+                <button class="tab" [class.active]="reporteActivo() === r.id"
+                    (click)="seleccionarReporte(r.id)">
+                    {{ r.label }}
+                </button>
+                }
             </div>
 
             <div class="history">
                 <div class="hist-head">
-                    <h3>Usuarios Inactivos</h3>
+                    <h3>{{ reporteInfo().label }}</h3>
                     <div class="pager">
                         <button class="pg-btn" (click)="paginaAnterior()" [disabled]="paginaActual() === 0"
                             aria-label="Anteriores">
@@ -33,7 +43,95 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- ===== Filtros de los reportes que los requieren ===== -->
+                @switch (reporteActivo()) {
+
+                @case ('evaluacion') {
+                <div class="filtros">
+                    <div class="fld">
+                        <label>Estado general</label>
+                        <input type="text" [ngModel]="filtroEstado()"
+                            (ngModelChange)="filtroEstado.set($event)" placeholder="Ej. Crítico" />
+                    </div>
+                    <div class="fld">
+                        <label>Fecha</label>
+                        <input type="date" [ngModel]="filtroFecha()"
+                            (ngModelChange)="filtroFecha.set($event)" />
+                    </div>
+                    <button class="btn-consultar" (click)="consultarEvaluacion()"
+                        [disabled]="!filtroEstado().trim() || !filtroFecha() || cargando()">
+                        Consultar
+                    </button>
+                </div>
+                }
+
+                @case ('medicionesTipo') {
+                <div class="filtros">
+                    <div class="fld">
+                        <label>Usuario</label>
+                        <select [ngModel]="selUsuarioMed()"
+                            (ngModelChange)="onUsuarioMedChange($event)">
+                            <option [ngValue]="null" disabled>Selecciona un usuario</option>
+                            @for (u of usuarios(); track u.usuarioId) {
+                            <option [ngValue]="u.usuarioId">{{ u.nombreUsuario }}</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="fld">
+                        <label>Piscina</label>
+                        <select [ngModel]="selPiscinaMed()"
+                            (ngModelChange)="selPiscinaMed.set($event)"
+                            [disabled]="selUsuarioMed() == null">
+                            <option [ngValue]="null" disabled>Selecciona una piscina</option>
+                            @for (p of piscinasUsuario(); track p.piscinaId) {
+                            <option [ngValue]="p.piscinaId">{{ p.nombrePiscina }}</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="fld">
+                        <label>Tipo de medición</label>
+                        <input type="text" [ngModel]="filtroTipo()"
+                            (ngModelChange)="filtroTipo.set($event)" placeholder="Ej. PH" />
+                    </div>
+                    <button class="btn-consultar" (click)="consultarMediciones()"
+                        [disabled]="selPiscinaMed() == null || !filtroTipo().trim() || cargando()">
+                        Consultar
+                    </button>
+                </div>
+                }
+
+                @case ('algas') {
+                <div class="filtros">
+                    <div class="fld">
+                        <label>Usuario</label>
+                        <select [ngModel]="selUsuarioAlgas()"
+                            (ngModelChange)="selUsuarioAlgas.set($event)">
+                            <option [ngValue]="null" disabled>Selecciona un usuario</option>
+                            @for (u of usuarios(); track u.usuarioId) {
+                            <option [ngValue]="u.usuarioId">{{ u.nombreUsuario }}</option>
+                            }
+                        </select>
+                    </div>
+                    <button class="btn-consultar" (click)="consultarAlgas()"
+                        [disabled]="selUsuarioAlgas() == null || cargando()">
+                        Consultar
+                    </button>
+                </div>
+                }
+
+                }
+
+                <!-- Mensaje de texto de la predicción de algas (cuando no hay riesgo) -->
+                @if (reporteActivo() === 'algas' && algasMensaje()) {
+                <div class="aviso">{{ algasMensaje() }}</div>
+                }
+
+                <!-- ===== Datagrids por reporte ===== -->
                 <div class="table-wrap">
+                    @switch (reporteActivo()) {
+
+                    @case ('inactivos') {
                     <table>
                         <thead>
                             <tr>
@@ -45,7 +143,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @for (u of usuariosPagina(); track u.email) {
+                            @for (u of datosPagina(); track $index) {
                             <tr>
                                 <td>{{ u.nombreUsuario }}</td>
                                 <td>{{ u.email }}</td>
@@ -56,13 +154,179 @@
                             } @empty {
                             <tr>
                                 <td colspan="5" class="empty">
-                                    @if (cargandoHistorial()) { Cargando usuarios… }
-                                    @else { No hay usuarios inactivos. }
+                                    @if (cargando()) { Cargando… } @else { No hay usuarios inactivos. }
                                 </td>
                             </tr>
                             }
                         </tbody>
                     </table>
+                    }
+
+                    @case ('ph') {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Piscina</th>
+                                <th>Promedio de PH</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (p of datosPagina(); track $index) {
+                            <tr>
+                                <td>{{ p.piscina_id }}</td>
+                                <td>{{ p.promedioPh | number:'1.2-2' }}</td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="2" class="empty">
+                                    @if (cargando()) { Cargando… } @else { No hay mediciones existentes. }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    }
+
+                    @case ('temperaturas') {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Piscina</th>
+                                <th>Temperatura (°C)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (t of datosPagina(); track $index) {
+                            <tr>
+                                <td>{{ t.piscina_id }}</td>
+                                <td>{{ t.temperaturaPiscina | number:'1.1-2' }}</td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="2" class="empty">
+                                    @if (cargando()) { Cargando… } @else { No hay mediciones existentes. }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    }
+
+                    @case ('criticas') {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Descripción</th>
+                                <th>Diagnóstico</th>
+                                <th>Estado General</th>
+                                <th class="nowrap">Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (c of datosPagina(); track $index) {
+                            <tr>
+                                <td>{{ c.descripcion }}</td>
+                                <td>{{ c.diagnostico }}</td>
+                                <td>{{ c.estadoGeneral }}</td>
+                                <td class="nowrap">{{ c.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="4" class="empty">
+                                    @if (cargando()) { Cargando… } @else { No hay recomendaciones existentes. }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    }
+
+                    @case ('evaluacion') {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estado General</th>
+                                <th class="nowrap">Fecha de Creación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (e of datosPagina(); track $index) {
+                            <tr>
+                                <td>{{ e.estadoGeneral }}</td>
+                                <td class="nowrap">{{ e.fechaCreacion | date:'dd/MM/yyyy' }}</td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="2" class="empty">
+                                    @if (cargando()) { Cargando… } @else { Selecciona un estado y una fecha, luego consulta. }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    }
+
+                    @case ('medicionesTipo') {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Piscina</th>
+                                <th>Piscina</th>
+                                <th class="nowrap">Fecha Medición</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (m of datosPagina(); track $index) {
+                            <tr>
+                                <td>{{ m.piscina_id }}</td>
+                                <td>{{ m.nombre_piscina }}</td>
+                                <td class="nowrap">{{ m.fecha_meicion | date:'dd/MM/yyyy' }}</td>
+                                <td>{{ m.tipo_medicion }}</td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="4" class="empty">
+                                    @if (cargando()) { Cargando… } @else { Selecciona piscina y tipo, luego consulta. }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    }
+
+                    @case ('algas') {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Piscina</th>
+                                <th>Temperatura (°C)</th>
+                                <th>Nivel de Cloro</th>
+                                <th>Riesgo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (a of datosPagina(); track $index) {
+                            <tr>
+                                <td>{{ a.nombrePiscina }}</td>
+                                <td>{{ a.temperaturaActual | number:'1.1-2' }}</td>
+                                <td>{{ a.nivelCloroActual | number:'1.1-2' }}</td>
+                                <td>{{ a.mensajeRiesgo }}</td>
+                            </tr>
+                            } @empty {
+                            <tr>
+                                <td colspan="4" class="empty">
+                                    @if (cargando()) { Cargando… }
+                                    @else if (algasMensaje()) { Sin riesgo detectado. }
+                                    @else { Selecciona un usuario y consulta. }
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    }
+
+                    }
                 </div>
             </div>
             <div class="foot">© 2024 Smart Pool Guardian — Todos los derechos reservados</div>

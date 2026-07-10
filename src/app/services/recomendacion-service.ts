@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { RecoCriticaResponseDTO } from '../models/dtos/RecoCriticaResponseDTO';
 
 const base_url = environment.base;
 
@@ -18,7 +19,7 @@ export class RecomendacionService {
   }
 
   porEvaluacionesCriticas() {
-    return this.http.get<any[]>(`${this.url}/recomendaciones-por-evaluaciones-criticas/`);
+    return this.http.get<RecoCriticaResponseDTO[]>(`${this.url}/recomendaciones-por-evaluaciones-criticas/`);
   }
 
   porPiscina(piscinaId: number) {

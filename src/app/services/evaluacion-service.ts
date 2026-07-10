@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { EvaluacionPorFiltroDTO } from '../models/dtos/EvaluacionPorFiltroDTO';
 
 const base_url = environment.base;
 
@@ -14,7 +15,9 @@ export class EvaluacionService {
   constructor(private http: HttpClient) {}
 
   filtrar(estadoG: string, fecha: string) {
-    return this.http.get<any[]>(`${this.url}/evaluacion-filtro/${estadoG}/${fecha}`);
+    return this.http.get<EvaluacionPorFiltroDTO[]>(
+      `${this.url}/evaluacion-filtro/${encodeURIComponent(estadoG)}/${fecha}`
+    );
   }
-  
+
 }
