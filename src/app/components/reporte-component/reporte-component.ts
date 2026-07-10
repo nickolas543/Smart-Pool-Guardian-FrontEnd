@@ -66,6 +66,12 @@ export class ReporteComponent implements OnInit {
   medicionesTipo = signal<MedPorTipoResponseDTO[]>([]);
   algas = signal<PrediccionAlgasDTO[]>([]);
   algasMensaje = signal<string>(''); // texto devuelto cuando no hay riesgo
+  ordenDesc = signal(true);
+  toggleOrden():void {
+    this.ordenDesc.update(v => !v);
+    this.temperaturas.update(lista => [...lista].reverse());
+  }
+
 
   // Reportes sin filtro que ya se cargaron (para no repetir la llamada).
   private cargados = new Set<ReporteId>();
@@ -172,6 +178,7 @@ export class ReporteComponent implements OnInit {
     this.cargando.set(true);
     this.mS.temperaturasMasAltas().subscribe({
       next: (data) => {
+        // <th (click)="toggleOrden()" style="cursor:pointer">Temperatura (°C) <i class="ti ti-arrow-{{ ordenDesc() ? 'down' : 'up' }}"></i>" ></th>
         this.temperaturas.set(data);
         this.marcarCargado('temperaturas');
         this.paginaActual.set(0);
